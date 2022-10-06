@@ -1,0 +1,12 @@
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <block type="text_print" id="n3b@Ij3Oh2^3i8n5iZ!z" x="244" y="205">
+    <value name="TEXT">
+      <shadow type="text" id="~WXXd`#(qQ1[$*~6~Y(P">
+        <field name="TEXT">abc</field>
+      </shadow>
+      <block type="text" id="vS*jlme*^gS)NwPV(/N%">
+        <field name="TEXT">hello</field>
+      </block>
+    </value>
+  </block>
+</xml>

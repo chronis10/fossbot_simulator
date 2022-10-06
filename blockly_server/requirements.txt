@@ -1,0 +1,12 @@
+Jinja2
+flask
+pyyaml
+SQLAlchemy
+Flask-SQLAlchemy
+SQLAlchemy-serializer
+Flask-Cors
+psutil
+eventlet
+Flask_SocketIO
+celery
+git+https://github.com/chronis10/fossbot_source.git --install-option="--platform=sim"
