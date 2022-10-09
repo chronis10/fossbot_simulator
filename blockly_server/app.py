@@ -347,5 +347,5 @@ def get_sound_effects():
             json.dump(sounds_names, out_file)  
             
 if __name__ == '__main__':
-    webbrowser.open("127.0.0.1")
-    socketio.run(app, host = '0.0.0.0',port=80, debug=False)
+    webbrowser.open("http://127.0.0.1:8080")
+    socketio.run(app, host = '0.0.0.0',port=8080, debug=False)
