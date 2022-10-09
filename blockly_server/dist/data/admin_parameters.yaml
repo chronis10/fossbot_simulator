@@ -10,8 +10,8 @@ step:
   
 motor_left:
   - name: Ταχύτητα αριστερού μοτέρ
-  - value: 22
-  - default: 22
+  - value: 23
+  - default: 23
 
 motor_right:
   - name: Ταχύτητα δεξιού μοτέρ
