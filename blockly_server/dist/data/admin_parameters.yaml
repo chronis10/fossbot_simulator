@@ -44,3 +44,24 @@ rotate_90:
   - name: Στροφή 90 μοίρες, κλίκ 
   - value: 12
   - default: 12
+
+simulator_ids:
+  client_id: ~  # ~ is None (or empty value)
+  fossbot_name: /fossbot
+  # fossbot_name starts with '/' because, in current examples,
+  # fossbot is located in root ('/') scene.
+  left_motor_name: left_motor
+  right_motor_name: right_motor
+  light_sensor_name: light_sensor
+  sensor_middle_name: MiddleSensor
+  sensor_right_name: RightSensor
+  sensor_left_name: LeftSensor
+  ultrasonic_shape: ultrasonic # ultrasonic is within a shape in example scene.
+  ultrasonic_name: ultrasonic_sensor
+  accelerometer_name: Accelerometer
+  gyroscope_name: GyroSensor
+  led_name: led_light
+  body_name: body
+  col_detector_name: coll_detector
+  floor_name: FossbotFloor
+  foss_gui: FossbotGUI

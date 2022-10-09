@@ -1,3 +1,0 @@
-([('app',
-   '/Users/christoschronis/Github/fossbot_simulator/blockly_server/dist/app',
-   'EXECUTABLE')],)

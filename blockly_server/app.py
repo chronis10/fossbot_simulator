@@ -1,5 +1,3 @@
-from crypt import methods
-from email.mime import audio
 from flask import Flask,jsonify,request,Response, render_template,redirect, url_for, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -14,10 +12,10 @@ import textwrap
 import shutil
 import yaml
 from flask_socketio import SocketIO, emit
-from celery import Celery
 import glob
 import json
 import sys
+import webbrowser
 
 DEBUG = os.getenv('DEBUG')
 if DEBUG is None:
@@ -30,7 +28,6 @@ BASED_DIR = os.path.abspath(os.path.dirname(sys.executable))
 #BASED_DIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 
 DATA_DIR =  os.path.join(BASED_DIR,'data')
-print(DATA_DIR)
 SQLITE_DIR = os.path.join(DATA_DIR,'robot_database.db')
 PROJECT_DIR =os.path.join(DATA_DIR,'projects')
 app.config ['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + SQLITE_DIR
@@ -117,6 +114,7 @@ def admin_panel():
 @socketio.on('get_admin_panel_parameters')
 def handle_get_admin_panel_parameters():
     parameters = load_parameters()
+    parameters.pop('simulator_ids')
     emit('parameters', { 'status': '200', 'parameters': parameters})
 
 @socketio.on('save_parameters')
@@ -126,11 +124,13 @@ def handle_save_parameters(data):
         parameters = load_parameters()
         i = 0
         for key, value in parameters.items():
+            print(key)
             if key == 'robot_name':
                 value[1]['value'] = params_values[i]
             else :     
                 value[1]['value'] = int(params_values[i])
             i = i + 1
+
         save_parameters(parameters)
         emit('save_parameters_result', { 'status': '200', 'data': parameters})
     except Exception as e:
@@ -279,25 +279,30 @@ def generate_py(code,id):
 
 def execute_code(id,manual_control=False):
     global SCRIPT_PROCCESS
+    my_env = os.environ.copy()
     if not manual_control:
         if not os.path.exists(os.path.join(PROJECT_DIR,f'{id}/{id}.py')):
             return {'status': 'file not found'}    
         if SCRIPT_PROCCESS is None or SCRIPT_PROCCESS.poll() is not None:        
-            SCRIPT_PROCCESS = subprocess.Popen(['python3', os.path.join(PROJECT_DIR,f'{id}/{id}.py')])
+            SCRIPT_PROCCESS = subprocess.Popen(['python', os.path.join(PROJECT_DIR,f'{id}/{id}.py')],env= my_env)
             return {'status': 'started'}
         else:
             return {'status': 'still running'}
     else:
         stop_now()
-        SCRIPT_PROCCESS = subprocess.Popen(['python3', os.path.join(APP_DIR,'utils/manual_control.py')])
+        SCRIPT_PROCCESS = subprocess.Popen(['python', os.path.join(APP_DIR,'utils/manual_control.py')])
         return {'status': 'started'}
 
 def stop_now():
     global SCRIPT_PROCCESS
-    if SCRIPT_PROCCESS is not None:     
-        os.kill(SCRIPT_PROCCESS.pid, signal.SIGINT)  
-        #SCRIPT_PROCCESS.terminate()
-        #print(SCRIPT_PROCCESS.poll())
+    if SCRIPT_PROCCESS is not None:   
+        if sys.platform == 'win32':
+            os.system("taskkill /F /pid "+str(SCRIPT_PROCCESS.pid))
+        else:
+            os.kill(SCRIPT_PROCCESS.pid, signal.SIGINT)
+
+        SCRIPT_PROCCESS.terminate()
+        print(SCRIPT_PROCCESS.poll())
         SCRIPT_PROCCESS = None
         print( 'stopped')
         return {'status': 'stopped'}
@@ -342,5 +347,5 @@ def get_sound_effects():
             json.dump(sounds_names, out_file)  
             
 if __name__ == '__main__':
-    
-    socketio.run(app, host = '0.0.0.0',port=80, debug=True) 
+    webbrowser.open("127.0.0.1")
+    socketio.run(app, host = '0.0.0.0',port=80, debug=False)

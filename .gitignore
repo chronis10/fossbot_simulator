@@ -1,0 +1,4 @@
+*_env/
+.DS_Store
+**/build/
+dist/

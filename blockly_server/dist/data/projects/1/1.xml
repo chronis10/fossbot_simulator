@@ -1,12 +1,29 @@
 <xml xmlns="https://developers.google.com/blockly/xml">
-  <block type="text_print" id="n3b@Ij3Oh2^3i8n5iZ!z" x="244" y="205">
-    <value name="TEXT">
-      <shadow type="text" id="~WXXd`#(qQ1[$*~6~Y(P">
-        <field name="TEXT">abc</field>
-      </shadow>
-      <block type="text" id="vS*jlme*^gS)NwPV(/N%">
-        <field name="TEXT">hello</field>
+  <block type="set_color" id="ScvsUZ@Q~I5~0}#/^Az=" x="275" y="151">
+    <field name="color_option">'red'</field>
+    <next>
+      <block type="controls_whileUntil" id="1E}fA}.Dw05O)vC`=@}C">
+        <field name="MODE">WHILE</field>
+        <value name="BOOL">
+          <block type="logic_boolean" id="w?mi(r,@$6tR/6:X.$f-">
+            <field name="BOOL">TRUE</field>
+          </block>
+        </value>
+        <statement name="DO">
+          <block type="move_forward" id="r};FHY^*VX6ZL2jEz8c;">
+            <next>
+              <block type="controls_if" id="fozH3mt3O_a,N_o4b/rX">
+                <value name="IF0">
+                  <block type="check_for_obstacle" id="c8JO32*gFoC7j[@c0r/["></block>
+                </value>
+                <statement name="DO0">
+                  <block type="turn_right_90" id="):9E]]RA37CdrSgx;(9~"></block>
+                </statement>
+              </block>
+            </next>
+          </block>
+        </statement>
       </block>
-    </value>
+    </next>
   </block>
 </xml>
