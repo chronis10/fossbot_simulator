@@ -120,15 +120,16 @@ def handle_get_admin_panel_parameters():
 @socketio.on('save_parameters')
 def handle_save_parameters(data):
     try:
-        params_values = data['parameters']
+        params_values = json.loads(data['parameters'])
+        print(params_values)
         parameters = load_parameters()
         i = 0
         for key, value in parameters.items():
             print(key)
-            if key == 'robot_name':
-                value[1]['value'] = params_values[i]
-            else :     
-                value[1]['value'] = int(params_values[i])
+            if key == 'robot_name':                
+                value['value'] = params_values['robot_name']
+            elif key != 'simulator_ids':     
+                value['value'] = int(params_values[key])
             i = i + 1
 
         save_parameters(parameters)
@@ -323,8 +324,8 @@ def get_robot_name():
     parameters = load_parameters()
     for key, value in parameters.items():
         if(key == "robot_name"):
-            print("Getting robot name: ", value[1]['value'] )
-            return value[1]['value']
+            print("Getting robot name: ", value['value'] )
+            return value['value']
     return " "
 
 def get_sound_effects():

@@ -1,67 +1,75 @@
-robot_name:
-  - name: Όνομα ρομπότ
-  - value: fossbot 003
-  - default: fossbot 003
- 
-step:
-  - name: Βήμα ένα, εκατοστά
-  - value: 15
-  - default: 15
-  
-motor_left:
-  - name: Ταχύτητα αριστερού μοτέρ
-  - value: 23
-  - default: 23
-
-motor_right:
-  - name: Ταχύτητα δεξιού μοτέρ
-  - value: 23
-  - default: 23
-
-sensor_distance:
-  - name: Αισθητήρας απόστασης, εμπόδιο μικρότερη από 
-  - value: 15
-  - default: 15
-
 light_sensor:
-  - name: Αισθητήρας φωτός σκοτάδι τιμή μεγαλύτερη από 
-  - value: 700
-  - default: 700
-
+  default: 700
+  name: "\u0391\u03B9\u03C3\u03B8\u03B7\u03C4\u03AE\u03C1\u03B1\u03C2 \u03C6\u03C9\
+    \u03C4\u03CC\u03C2 \u03C3\u03BA\u03BF\u03C4\u03AC\u03B4\u03B9 \u03C4\u03B9\u03BC\
+    \u03AE \u03BC\u03B5\u03B3\u03B1\u03BB\u03CD\u03C4\u03B5\u03C1\u03B7 \u03B1\u03C0\
+    \u03CC"
+  value: 701
 line_sensor_center:
-  - name: Αισθητήρας γραμμής κεντρικός, τιμή εντοπισμού 
-  - value: 50
-  - default: 50
+  default: 50
+  name: "\u0391\u03B9\u03C3\u03B8\u03B7\u03C4\u03AE\u03C1\u03B1\u03C2 \u03B3\u03C1\
+    \u03B1\u03BC\u03BC\u03AE\u03C2 \u03BA\u03B5\u03BD\u03C4\u03C1\u03B9\u03BA\u03CC\
+    \u03C2, \u03C4\u03B9\u03BC\u03AE \u03B5\u03BD\u03C4\u03BF\u03C0\u03B9\u03C3\u03BC\
+    \u03BF\u03CD"
+  value: 50
 line_sensor_left:
-  - name: Αισθητήρας γραμμής αριστερός, τιμή εντοπισμού 
-  - value: 50
-  - default: 50
+  default: 50
+  name: "\u0391\u03B9\u03C3\u03B8\u03B7\u03C4\u03AE\u03C1\u03B1\u03C2 \u03B3\u03C1\
+    \u03B1\u03BC\u03BC\u03AE\u03C2 \u03B1\u03C1\u03B9\u03C3\u03C4\u03B5\u03C1\u03CC\
+    \u03C2, \u03C4\u03B9\u03BC\u03AE \u03B5\u03BD\u03C4\u03BF\u03C0\u03B9\u03C3\u03BC\
+    \u03BF\u03CD"
+  value: 50
 line_sensor_right:
-  - name: Αισθητήρας γραμμής δεξιός, τιμή εντοπισμού 
-  - value: 50
-  - default: 50
+  default: 50
+  name: "\u0391\u03B9\u03C3\u03B8\u03B7\u03C4\u03AE\u03C1\u03B1\u03C2 \u03B3\u03C1\
+    \u03B1\u03BC\u03BC\u03AE\u03C2 \u03B4\u03B5\u03BE\u03B9\u03CC\u03C2, \u03C4\u03B9\
+    \u03BC\u03AE \u03B5\u03BD\u03C4\u03BF\u03C0\u03B9\u03C3\u03BC\u03BF\u03CD"
+  value: 50
+motor_left:
+  default: 23
+  name: "\u03A4\u03B1\u03C7\u03CD\u03C4\u03B7\u03C4\u03B1 \u03B1\u03C1\u03B9\u03C3\
+    \u03C4\u03B5\u03C1\u03BF\u03CD \u03BC\u03BF\u03C4\u03AD\u03C1"
+  value: 23
+motor_right:
+  default: 23
+  name: "\u03A4\u03B1\u03C7\u03CD\u03C4\u03B7\u03C4\u03B1 \u03B4\u03B5\u03BE\u03B9\
+    \u03BF\u03CD \u03BC\u03BF\u03C4\u03AD\u03C1"
+  value: 23
+robot_name:
+  default: fossbot 003
+  name: "\u038C\u03BD\u03BF\u03BC\u03B1 \u03C1\u03BF\u03BC\u03C0\u03CC\u03C4"
+  value: fossbot 003
 rotate_90:
-  - name: Στροφή 90 μοίρες, κλίκ 
-  - value: 12
-  - default: 12
-
+  default: 12
+  name: "\u03A3\u03C4\u03C1\u03BF\u03C6\u03AE 90 \u03BC\u03BF\u03AF\u03C1\u03B5\u03C2\
+    , \u03BA\u03BB\u03AF\u03BA"
+  value: 12
+sensor_distance:
+  default: 15
+  name: "\u0391\u03B9\u03C3\u03B8\u03B7\u03C4\u03AE\u03C1\u03B1\u03C2 \u03B1\u03C0\
+    \u03CC\u03C3\u03C4\u03B1\u03C3\u03B7\u03C2, \u03B5\u03BC\u03C0\u03CC\u03B4\u03B9\
+    \u03BF \u03BC\u03B9\u03BA\u03C1\u03CC\u03C4\u03B5\u03C1\u03B7 \u03B1\u03C0\u03CC"
+  value: 15
 simulator_ids:
-  client_id: ~  # ~ is None (or empty value)
-  fossbot_name: /fossbot
-  # fossbot_name starts with '/' because, in current examples,
-  # fossbot is located in root ('/') scene.
-  left_motor_name: left_motor
-  right_motor_name: right_motor
-  light_sensor_name: light_sensor
-  sensor_middle_name: MiddleSensor
-  sensor_right_name: RightSensor
-  sensor_left_name: LeftSensor
-  ultrasonic_shape: ultrasonic # ultrasonic is within a shape in example scene.
-  ultrasonic_name: ultrasonic_sensor
   accelerometer_name: Accelerometer
-  gyroscope_name: GyroSensor
-  led_name: led_light
   body_name: body
+  client_id: null
   col_detector_name: coll_detector
   floor_name: FossbotFloor
   foss_gui: FossbotGUI
+  fossbot_name: /fossbot
+  gyroscope_name: GyroSensor
+  led_name: led_light
+  left_motor_name: left_motor
+  light_sensor_name: light_sensor
+  right_motor_name: right_motor
+  sensor_left_name: LeftSensor
+  sensor_middle_name: MiddleSensor
+  sensor_right_name: RightSensor
+  ultrasonic_name: ultrasonic_sensor
+  ultrasonic_shape: ultrasonic
+step:
+  default: 15
+  name: "\u0392\u03AE\u03BC\u03B1 \u03AD\u03BD\u03B1, \u03B5\u03BA\u03B1\u03C4\u03BF\
+    \u03C3\u03C4\u03AC"
+  value: 15

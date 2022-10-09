@@ -5,44 +5,48 @@ function loadSettings(data) {
     console.log('Loading settings of the projects');
 
     parameters = data.parameters;
-    console.log('parameters:', Object.values(parameters));
+    console.log('parameters:', parameters);
 
     parameters_array = Object.values(parameters);
+    keys_array = Object.keys(parameters);
 
-    for (var i = 0; i < parameters_array.length; i++) {
+    for (var i = 0; i < keys_array.length; i++) {
+        const parameter_key = keys_array[i];
         const parameter = parameters_array[i];
+        console.log('parameter:', parameter_key);
+        
 
-        console.log('parameter:', parameter);
-
-        if(parameter[0]['name'] == "Όνομα ρομπότ") {
+        if(parameter['name'] == "Όνομα ρομπότ") {
             document.getElementById("body-table-parameters").insertRow(-1).innerHTML =
             '<tr>' +
-            '<td>' + parameter[0]['name'] + '</td>' +
-            '<td>' + parameter[2]['default'] + '</td>' +
-            '<td>' + '<input type="text" id="' + i + '" value="' + parameter[1]['value'] + '">' + '</td>' +
+            '<td>' + parameter['name'] + '</td>' +
+            '<td>' + parameter['default'] + '</td>' +
+            '<td>' + '<input type="text" id="' + i + '" value="' + parameter['value'] + '" name="' + parameter_key +  '">' + '</td>' +
             '</tr>';
         } else {
             document.getElementById("body-table-parameters").insertRow(-1).innerHTML =
             '<tr>' +
-            '<td>' + parameter[0]['name'] + '</td>' +
-            '<td>' + parameter[2]['default'] + '</td>' +
-            '<td>' + '<input type="number" id="' + i + '" value="' + parameter[1]['value'] + '">' + '</td>' +
+            '<td>' + parameter['name'] + '</td>' +
+            '<td>' + parameter['default'] + '</td>' +
+            '<td>' + '<input type="number" id="' + i + '" value="' + parameter['value'] + '" name="' + parameter_key + '">' + '</td>' +
             '</tr>';
         } 
     }
 }
 
 async function saveSettings() {
-    let parameters_to_send = [];
+    let parameters_to_send = {};
 
     for (var i = 0; i < parameters_array.length; i++) {
         var value = document.getElementById(i).value;
-        console.log("value is ", value);
-        parameters_to_send.push(value);
+        var par_name = document.getElementById(i).name;
+        // parameters_to_send.push(value);
+        parameters_to_send[par_name] = value;
     }
 
+
     console.log("parameters to send : ", parameters_to_send);
-    const result = await sendParameters(parameters_to_send);
+    const result = await sendParameters(JSON.stringify(parameters_to_send));
 
     if (result.status == 200) {
         window.location.replace('/');
