@@ -16,42 +16,45 @@ function loadProjects(data) {
     //     }
     //     location.reload();
     // }
-    
-    for (var i = 0; i < projects_array.length; i++) {
-        const project = projects_array[i];
+     
+        last_table_size = projects_array.length
+        for (var i = 1; i < projects_array.length; i++) {
+            const project = projects_array[i];
 
-        //add every time the the project name as the last row
-        document.getElementById("body-table-projects").insertRow(-1).innerHTML =
-            '<tr>' +
-            '<td>' + project['title'] +'</td>'+
-            '<td>' + project['info'] +'</td>'+
-            '<td>' + project['project_id'] + '</td>' +
-            '<td> <div id="run-Blockly-Button-container" class="run-Blockly-Button-container">' +
-                        '<div id="run-Blockly-Button-wrap" class="run-Blockly-Button-wrap">' +
-                            '<button onclick="execute_script('+ project['project_id'] +')" type="button" class="run-Blockly" id="open-Blockly">' +
-                                'Εκτέλεση' +
-                            '</button>' +
+            //add every time the the project name as the last row
+            document.getElementById("body-table-projects").insertRow(-1).innerHTML =
+                '<tr>' +
+                '<td>' + project['title'] +'</td>'+
+                '<td>' + project['info'] +'</td>'+
+                '<td>' + project['project_id'] + '</td>' +
+                '<td> <div id="run-Blockly-Button-container" class="run-Blockly-Button-container">' +
+                            '<div id="run-Blockly-Button-wrap" class="run-Blockly-Button-wrap">' +
+                                '<button onclick="execute_script('+ project['project_id'] +')" type="button" class="run-Blockly" id="open-Blockly">' +
+                                    'Εκτέλεση' +
+                                '</button>' +
+                            '</div>' +
                         '</div>' +
+                '</td>' +
+                '<td> <div id="open-Blockly-Button-container" class="open-Blockly-Button-container">' +
+                    '<div id="open-Blockly-Button-wrap" class="open-Blockly-Button-wrap">' +
+                        '<button type="button" class="open-Blockly" id="open-Blockly">' +
+                            '<a href="/blockly?id='+ project['project_id'] +'" id="open-Blockly-href" style="color: white; text-decoration: none;">Επεξεργασία</a>' +
+                        '</button>' +
                     '</div>' +
-            '</td>' +
-            '<td> <div id="open-Blockly-Button-container" class="open-Blockly-Button-container">' +
-                '<div id="open-Blockly-Button-wrap" class="open-Blockly-Button-wrap">' +
-                    '<button type="button" class="open-Blockly" id="open-Blockly">' +
-                        '<a href="/blockly?id='+ project['project_id'] +'" id="open-Blockly-href" style="color: white; text-decoration: none;">Επεξεργασία</a>' +
-                    '</button>' +
                 '</div>' +
-            '</div>' +
-            '</td>' +
-            '<td>   <div id="delete-Blockly-Button-container" class="delete-Blockly-Button-container">' +
-                        '<div id="delete-Blockly-Button-wrap" class="delete-Blockly-Button-wrap">' +
-                            '<button onclick="deleteElement(this,'+ project['project_id'] +')" type="button" class="delete-Blockly" id="open-Blockly">' +
-                                '<a id="open-Blockly-href" style="color: white; text-decoration: none;">Διαγραφή</a>' +
-                            '</button>' +
+                '</td>' +
+                '<td>   <div id="delete-Blockly-Button-container" class="delete-Blockly-Button-container">' +
+                            '<div id="delete-Blockly-Button-wrap" class="delete-Blockly-Button-wrap">' +
+                                '<button onclick="deleteElement(this,'+ project['project_id'] +')" type="button" class="delete-Blockly" id="open-Blockly">' +
+                                    '<a id="open-Blockly-href" style="color: white; text-decoration: none;">Διαγραφή</a>' +
+                                '</button>' +
+                            '</div>' +
                         '</div>' +
-                    '</div>' +
-            '</td>' +
-            '</tr>';
-    }
+                '</td>' +
+                '</tr>';
+        }
+     
+   
 
 }
 

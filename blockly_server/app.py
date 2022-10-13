@@ -56,12 +56,28 @@ def before_first_request():
         os.mkdir(PROJECT_DIR)
     elif not os.path.exists(PROJECT_DIR):
         os.mkdir(PROJECT_DIR)    
+    get_sound_effects()
     try:
-        db.session.query(Projects).one()
+        db.session.query(Projects)
     except:
         db.create_all()
+
+        if len(db.session.query(Projects)) == 0: 
+            create_kindergarten_files()
     if not os.path.exists(os.path.join(DATA_DIR,'admin_parameters.yaml')):
         shutil.copy(os.path.join(APP_DIR,'utils/code_templates/admin_parameters.yaml'),os.path.join(DATA_DIR,'admin_parameters.yaml'))
+
+def create_kindergarten_files():
+    title = "Kindergarten Project"
+    info = "Default file for Kindergarten"
+    project = Projects(title,info)
+    db.session.add(project) 
+    print('dd')
+    db.session.commit()
+    db.session.refresh(project)
+    os.mkdir(os.path.join(PROJECT_DIR,f'{project.project_id}'))
+    shutil.copy(os.path.join(APP_DIR,'utils/code_templates/template.xml'),os.path.join(PROJECT_DIR,f'{project.project_id}/{project.project_id}.xml'))
+
 
 @socketio.on('connection')
 def on_connect(data):
@@ -86,21 +102,30 @@ def handle_get_all_projects():
     projects_list = get_all_projects()
     print('getting all projects')
     print(projects_list)
-    emit('all-projects', { 'status': '200', 'data': projects_list })
+
+    emit('all-projects', { 'status': '200', 'data': projects_list})
 
 @app.route('/blockly')
 def blockly():
     stop_now()
     id = request.args.get('id') 
+    print("------------------>",id)
     robot_name = get_robot_name()
     get_sound_effects()
     return render_template('blockly.html', project_id=id, robot_name=robot_name)            
 
+@app.route('/kindergarten')
+def kindergarten():
+    stop_now()
+    robot_name = get_robot_name()
+    # get_sound_effects()
+    return render_template('blockly_simple.html', project_id=1, robot_name=robot_name)  
+
 @socketio.on('get_sound_effects')
 def blockly_get_sound_effects():
-    if os.path.exists(os.path.join(DATA_DIR,'data/sound_effects.json')):
-        with open(os.path.join(DATA_DIR,'data/sound_effects.json'), 'r') as file:
-            sounds = json.load(file)  
+    if os.path.exists(os.path.join(DATA_DIR,'sound_effects.json')):
+        with open(os.path.join(DATA_DIR,'sound_effects.json'), 'r') as file:
+            sounds = json.load(file)
             emit('sound_effects',  { 'status': 200, 'data': sounds })
     else:
         emit('sound_effects', { 'status': 404, 'data': 'file does not exist'})       
@@ -164,7 +189,7 @@ def handle_delete_project(data):
         print(type(project))
         db.session.delete(project)
         db.session.commit()
-        shutil.rmtree(os.path.join(PROJECT_DIR,f'{project.project_id}/{project.project_id}'))
+        shutil.rmtree(os.path.join(PROJECT_DIR,f'{project.project_id}'))
         emit('delete_project_result', {'status':'200', 'project_deleted': 'true' })
     except Exception as e:
         print(e)
@@ -329,24 +354,25 @@ def get_robot_name():
     return " "
 
 def get_sound_effects():
-    print("Getting sounds")
-    if os.path.exists('data/sound_effects'):
-        mp3_sounds_list = glob.glob('data/sound_effects/*.mp3')
+    print("Getting sounds")    
+    if os.path.exists(os.path.join(DATA_DIR,'sound_effects')):
+        mp3_sounds_list = glob.glob(os.path.join(DATA_DIR,'sound_effects/*.mp3'))        
         sounds_names = []
         for sound in mp3_sounds_list: 
-            split_list = sound.split("/")
-            audio_name = split_list[2] 
+            # split_list = sound.split("/")
+            # audio_name = split_list[2] 
+            split_list = os.path.split(sound)
+            audio_name = split_list[-1]
             audio_name_list = audio_name.split(".")
             audio_name = audio_name_list[0]
-            sounds_names.append({ "sound_name": audio_name, "sound_path": sound})
-        print("sound effects:")
-        print(sounds_names)   
+            sounds_names.append({ "sound_name": audio_name, "sound_path": os.path.normpath(sound)})        
+        print("sound effects:")        
         #delete first the json file if exists and then create it again 
-        if os.path.exists('data/sound_effects.json'):
-            os.remove('data/sound_effects.json')
-        with open('data/sound_effects.json', 'w') as out_file:
+        if os.path.exists(os.path.join(DATA_DIR,'sound_effects.json')):
+            os.remove(os.path.join(DATA_DIR,'sound_effects.json'))
+        with open(os.path.join(DATA_DIR,'sound_effects.json'), 'w') as out_file:
             json.dump(sounds_names, out_file)  
-            
+             
 if __name__ == '__main__':
     webbrowser.open("http://127.0.0.1:8080")
     socketio.run(app, host = '0.0.0.0',port=8080, debug=False)
