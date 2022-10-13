@@ -9,6 +9,7 @@ let options = {
   trashcan: true,
   horizontalLayout: false,
   toolboxPosition: 'start',
+  renderer: 'thrasos',
   css: true,
   media: 'https://blockly-demo.appspot.com/static/media/',
   rtl: false,
@@ -331,8 +332,10 @@ socket.on("connect", function () {
 
 socket.emit('get_sound_effects');
 let received_data;
+
 socket.on('sound_effects', (data) => {
   received_data = data;
+  
   Blockly.Blocks['play_sound'] = {
     init: function () {
       this.appendDummyInput()
@@ -349,7 +352,7 @@ socket.on('sound_effects', (data) => {
       if (received_data.status == 200) {
         const soundsArray = received_data.data
         for (let i = 0; i < soundsArray.length; i++) {
-          let obj = soundsArray[i]
+          let obj = soundsArray[i]          
           sound_effects.push([obj.sound_name, '\''+ obj.sound_path + '\''])
         }
         return sound_effects
@@ -362,7 +365,7 @@ socket.on('sound_effects', (data) => {
 
 Blockly.Python['play_sound'] = function (block) {
   var input_value = block.getFieldValue('option');
-  var code = 'robot.play_sound(' + input_value + ')\n';
+  var code = 'robot.play_sound(r' + input_value + ')\n';
   return code;
 }
 
