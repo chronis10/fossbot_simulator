@@ -13,6 +13,6 @@
 ### Usage
 
 1) Start the Coppelia Simulator
-2) Load a scene from ```FossBot.Blockly.Windows_v0.1/Coppelia_Scenes`` directory and start the simulation using the play button from top
+2) Load a scene from ```FossBot.Blockly.Windows_v0.1/Coppelia_Scenes``` directory and start the simulation using the play button from top
 3) Start the ```FossBot Blockly.exe```
 4) Enjoy!
