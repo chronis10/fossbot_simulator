@@ -19,6 +19,10 @@
   <script src="{{ url_for('static',filename='js/panel-page.js')}}"></script>
   <script src="{{ url_for('static',filename='js/modals.js')}}"></script>
 
+  <link href="{{ url_for('static',filename='fontawesome/css/fontawesome.css')}}" rel="stylesheet">
+  <link href="{{ url_for('static',filename='fontawesome/css/brands.css')}}"  rel="stylesheet">
+  <link href="{{ url_for('static',filename='fontawesome/css/solid.css')}}"  rel="stylesheet">
+
   <style>
     @import url("{{ url_for('static',filename='css/header-style.css')}}");
     @import url("{{ url_for('static',filename='css/panel-page-body-style.css')}}");
@@ -55,13 +59,18 @@
   {% include 'header.html' %}
   <div id="main-container">
     <div id="go-back-to-home-button-container">
-      <div id="go-back-to-home-button-wrap">
+      <div id="button_fa_wrap"  >
+        <a href='/'   style="color: rgb(255, 136, 0); text-decoration: none;">
+        <i class="fa-solid fa-house"></i>
+        </a>
+      </div>
+      <!-- <div id="go-back-to-home-button-wrap">
         <button type="button" class="go-back-to-home">
           <a href='/' id="open-home-href" style="color: white; text-decoration: none;">
             Επιστροφή στην αρχική σελίδα
           </a>
         </button>
-      </div>
+      </div> -->
     </div>
 
     <div id="panel-title-container">

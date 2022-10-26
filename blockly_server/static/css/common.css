@@ -1,6 +1,13 @@
 html, body{
- height: 100%;
- margin: 0;
+  /* width: 100%;
+  height: 100%;
+  position: absolute;
+  /* remove the extra whites around */
+  /* margin: 0; */
+  /* height:100vh; */
+  margin:0;
+   padding:0;
+   height:100%;
 }
 
 label, button {
@@ -49,7 +56,159 @@ label, button {
 
 
 #main-container {
-  height: 100vh;
-
   
+  /* min-height:100%;
+  position:relative; */
+  
+}
+#content-container{
+  height: 87vh;
+  width: 100%;  
+
+}
+#button_fa_wrap{
+  height: 60px;
+  width: 65px;
+  font-size: 45px;
+  display: inline-block;
+}
+
+#button_fa_wrap_home{
+  height: 60px;
+  width: 45px;
+  font-size: 45px;
+  display: inline-block;
+}
+#button_fa_wrap_upload{
+  height: 60px;
+  width: 45px;
+  font-size: 45px;
+  display: inline-block;
+}
+
+#button__headers_row_one_icon{
+  /* text-align: center; */
+  text-align:right;
+
+    /* border: 1px solid black;  */
+    width: 100%; 
+    margin-right: 25px;
+
+}
+
+#button__headers_row_two_icon{
+  /* text-align: center; */
+  text-align:right;
+
+    /* border: 1px solid black;  */
+    width: 100%; 
+    margin-right: 15px;
+
+}
+
+.text-and-image-line{
+ 
+  vertical-align:middle;
+   display:inline;
+  font-size: 10px;
+}
+
+
+
+
+
+#button_fa_wrap_controls_table{
+  height: 35px;
+  width: 35px;
+  font-size: 35px;
+  display: inline-block;
+  
+  
+}
+
+.custom_row_home{
+  margin:0;
+  width: 100%;
+}
+
+.custom_row_right{
+  margin:0;
+  width: 100%;
+  position: relative;
+  text-align:right;
+}
+
+.custom_row_text{
+  margin:0;
+  width: 100%;
+  position: relative;
+
+}
+
+.custom_row_text_center{
+ 
+  width: 100%;
+  position: relative;
+  text-align:center;
+  display: block;
+  margin-right: 125px;
+  
+}
+
+.custom_row{
+  height: 100%;
+  width: 100%;
+}
+
+#button_fa_wrap_controls{
+  height: 80px;
+  width: 80px;
+  font-size: 80px;
+  display: inline-block;
+  margin-inline: 5%;
+  
+}
+
+#button_fa_wrap_right
+{
+  height: 60px;
+  width: 65px;
+  font-size: 45px;
+  display: inline-block;
+  
+  
+  
+
+}
+
+#button__controls_row{
+  text-align: center;
+  
+}
+
+#button__headers_row{
+  /* text-align: center; */
+  text-align: center;
+  display: grid; 
+  grid-template-columns: 5fr 1fr; 
+   
+    /* border: 1px solid black;  */
+    width: 100%; 
+    align-items: center;
+        justify-content: center;
+}
+
+#button_spacer{
+  height: 60px;
+  width: 80px;
+  display: inline-block;
+  
+}
+
+
+
+#icons_row{
+  margin-left: 10px;
+ 
+
 }

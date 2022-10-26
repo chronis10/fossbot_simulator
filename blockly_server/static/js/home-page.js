@@ -1,6 +1,7 @@
 //attributes for adding a new project 
 let new_project_title;
 let new_project_description;
+let last_table_size = 1;
 
 function loadProjects(data) {
     console.log('load projects');
@@ -17,46 +18,92 @@ function loadProjects(data) {
     //     location.reload();
     // }
      
-        last_table_size = projects_array.length
-        for (var i = 1; i < projects_array.length; i++) {
-            const project = projects_array[i];
+        
+        if (last_table_size !=  projects_array.length){
+            for (var i = 1; i < projects_array.length; i++) {
+                const project = projects_array[i];
 
-            //add every time the the project name as the last row
-            document.getElementById("body-table-projects").insertRow(-1).innerHTML =
-                '<tr>' +
-                '<td>' + project['title'] +'</td>'+
-                '<td>' + project['info'] +'</td>'+
-                '<td>' + project['project_id'] + '</td>' +
-                '<td> <div id="run-Blockly-Button-container" class="run-Blockly-Button-container">' +
-                            '<div id="run-Blockly-Button-wrap" class="run-Blockly-Button-wrap">' +
-                                '<button onclick="execute_script('+ project['project_id'] +')" type="button" class="run-Blockly" id="open-Blockly">' +
-                                    'Εκτέλεση' +
-                                '</button>' +
-                            '</div>' +
-                        '</div>' +
-                '</td>' +
-                '<td> <div id="open-Blockly-Button-container" class="open-Blockly-Button-container">' +
-                    '<div id="open-Blockly-Button-wrap" class="open-Blockly-Button-wrap">' +
-                        '<button type="button" class="open-Blockly" id="open-Blockly">' +
-                            '<a href="/blockly?id='+ project['project_id'] +'" id="open-Blockly-href" style="color: white; text-decoration: none;">Επεξεργασία</a>' +
-                        '</button>' +
-                    '</div>' +
-                '</div>' +
-                '</td>' +
-                '<td>   <div id="delete-Blockly-Button-container" class="delete-Blockly-Button-container">' +
-                            '<div id="delete-Blockly-Button-wrap" class="delete-Blockly-Button-wrap">' +
-                                '<button onclick="deleteElement(this,'+ project['project_id'] +')" type="button" class="delete-Blockly" id="open-Blockly">' +
-                                    '<a id="open-Blockly-href" style="color: white; text-decoration: none;">Διαγραφή</a>' +
-                                '</button>' +
-                            '</div>' +
-                        '</div>' +
-                '</td>' +
-                '</tr>';
+                //add every time the the project name as the last row
+                document.getElementById("body-table-projects").insertRow(-1).innerHTML =
+                    '<tr>' +
+                    '<td>' + project['title'] +'</td>'+
+                    '<td>' + project['info'] +'</td>'+
+                
+                    '<td> ' + `<div id="button__controls_row">
+                                <div id="button_fa_wrap_controls_table">
+                                <a onclick="jsfunction()" href="javascript:runCode(` + project['project_id'] +`);"  style="color: rgb(56, 199, 0); text-decoration: none;">
+                                <i class="fa-solid fa-circle-play"></i>
+                                </a>
+                                </div>
+                                <div id="button_fa_wrap_controls_table">
+                                <a onclick="jsfunction()" href="javascript:stop_script();"  style="color: rgb(199, 30, 0); text-decoration: none;">
+                                <i class="fa-solid fa-circle-stop"></i>
+                                </a>
+                                </div>
+                            ` +
+                            // '<div id="run-Blockly-Button-container" class="run-Blockly-Button-container">' +
+                            //     '<div id="run-Blockly-Button-wrap" class="run-Blockly-Button-wrap">' +
+                            //         '<button onclick="execute_script('+ project['project_id'] +')" type="button" class="run-Blockly" id="open-Blockly">' +
+                            //             'Εκτέλεση' +
+                            //         '</button>' +
+                            //     '</div>' +
+                            // '</div>' +
+                    '</td>' +
+                    '<td>' + 
+                    `<div id="button__controls_row">
+                                <div id="button_fa_wrap_controls_table">
+                                <a href="/export_project/` + project['project_id'] +`"  style="color: rgb(0, 110, 255); text-decoration: none;">
+                                <i class="fa-solid fa-download"></i>
+                                </a>
+                                </div>` +
+                                '</td>' +
+                    '<td>' + 
+                    `<div id="button__controls_row">
+                                <div id="button_fa_wrap_controls_table">
+                                <a href="/blockly?id=` + project['project_id'] +`"  style="color: rgb(255, 175, 2); text-decoration: none;">
+                                <i class="fa-solid fa-pencil"></i>
+                                </a>
+                                </div>` +
+                    // '<div id="open-Blockly-Button-container" class="open-Blockly-Button-container">' +
+                    //     '<div id="open-Blockly-Button-wrap" class="open-Blockly-Button-wrap">' +
+                    //         '<button type="button" class="open-Blockly" id="open-Blockly">' +
+                    //             '<a href="/blockly?id='+ project['project_id'] +'" id="open-Blockly-href" style="color: white; text-decoration: none;">Επεξεργασία</a>' +
+                    //         '</button>' +
+                        // '</div>' +
+                    // '</div>' +
+                    '</td>' +
+                    '<td>' + 
+                    `<div id="button_fa_wrap_controls_table">
+                    <a href="#" onclick="deleteElement(this,`+ project['project_id'] +`)" style="color: rgb(199, 30, 0); text-decoration: none;">
+                    <i class="fa-solid fa-trash"></i>
+                    </a>
+                    </div>` +
+
+                    //   '<div id="delete-Blockly-Button-container" class="delete-Blockly-Button-container">' +
+                    //             '<div id="delete-Blockly-Button-wrap" class="delete-Blockly-Button-wrap">' +
+                    //                 '<button onclick="deleteElement(this,'+ project['project_id'] +')" type="button" class="delete-Blockly" id="open-Blockly">' +
+                    //                     '<a id="open-Blockly-href" style="color: white; text-decoration: none;">Διαγραφή</a>' +
+                    //                 '</button>' +
+                    //             '</div>' +
+                    //         '</div>' +
+                    '</td>' +
+                    '</tr>';
+            }
+            last_table_size = projects_array.length
         }
      
    
 
 }
+
+
+uplodadProject
+
+function uplodadProject() {
+
+    document.getElementById("fileDialogId").click();
+}
+
 
 function createNewProject() {
     //title 
@@ -98,9 +145,9 @@ async function getDescription() {
 }
 
 async function deleteElement(el,id) {
-    var tbl = el.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;    
-    var row = el.parentNode.parentNode.parentNode.parentNode.rowIndex;    
-
+    var tbl = el.parentNode.parentNode.parentNode.parentNode.parentNode;    
+    var row = el.parentNode.parentNode.parentNode.rowIndex;    
+    
     const result = await deleteProject(id)
     console.log('result is ', result)
     if(result.status == '200') {

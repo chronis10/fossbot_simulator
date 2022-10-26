@@ -12,6 +12,8 @@ async function save_xml(id) {
   }
 }
 
+
+
 function loadXml(xml) {
   const dom = Blockly.Xml.textToDom(xml);
   Blockly.mainWorkspace.clear();
@@ -20,6 +22,7 @@ function loadXml(xml) {
 
 //get all projects from db  
 async function loadProject() {
+  // terminalhandler();
   const url_str = window.location.href;
   console.log(url_str)
 
@@ -40,6 +43,12 @@ async function loadProject() {
     }
   }
 }
+
+// async function terminalhandler(){
+//   let temp = await terminal_data_reciever();
+//   alert(temp);
+//   return temp;
+// }
 
 
 //send the code from thw workspace to be run in the robot 
@@ -73,3 +82,4 @@ async function runCode(id) {
 function stop_script() {
   stopScript();
 }
+
