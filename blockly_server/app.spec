@@ -8,7 +8,7 @@ a = Analysis(
     ['app.py'],
     pathex=[],
     binaries=[],
-    datas=[('templates', 'templates'), ('utils', 'utils'), ('static', 'static')],
+    datas=[('templates', 'templates'), ('utils', 'utils'), ('static', 'static'), ('lib', 'lib')],
     hiddenimports=[
         'engineio.async_drivers.threading',
                 'eventlet.hubs.epolls',

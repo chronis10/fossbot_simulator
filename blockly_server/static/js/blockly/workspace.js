@@ -674,3 +674,24 @@ Blockly.Python['get_timer'] = function (block) {
   var code = 'robot.get_elapsed()\n';
   return [code,Blockly.Python.ORDER_NONE];
 };
+
+
+//Print terminal
+
+Blockly.Blocks['transmit'] = {
+  init: function() {
+    this.appendValueInput("for_print")
+        .setCheck(null)
+        .appendField("Εκτύπωσε");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(120);
+ this.setTooltip(" ");
+ this.setHelpUrl(" ");
+  }
+};
+
+Blockly.Python['transmit'] = function(block) {
+  var value_for_print = Blockly.Python.valueToCode(block, 'for_print', Blockly.Python.ORDER_ATOMIC);
+  return 'transmit(' + value_for_print + ')\n';
+};

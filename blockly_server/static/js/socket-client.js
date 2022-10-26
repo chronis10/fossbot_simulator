@@ -1,7 +1,7 @@
 var socket = io('http://' + document.domain + ':' + location.port);
 
 socket.on("connect", function () {
-  console.log("Socket connected!");
+  console.log("Socket connected!");  
   socket.emit('connection', { 'data': 'I\'m connected!' });
 });
 
@@ -9,6 +9,18 @@ socket.on('disconnect', () => {
   console.log("Socket disconnected");
   socket.emit('disconnection', { 'data': 'I\'m disconnected!' });
 });
+
+
+
+socket.on("trm", (incoming) => {
+  console.log(incoming);
+  document.getElementById('terminal_scrollable-content').innerHTML+= '<p>' + incoming.data + '</p>';
+  var elem = document.getElementById('terminal_scrollable-content');
+  elem.scrollTop = elem.scrollHeight;
+});
+
+
+
 
 const deleteProject = function (id) {
   return new Promise(function (resolve, reject) {

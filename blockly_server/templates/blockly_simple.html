@@ -28,6 +28,10 @@
   <script src="{{ url_for('static',filename='modules/popper.min.js')}}"></script>
   <script src="{{ url_for('static',filename='modules/bootstrap.bundle.min.js')}}"></script>
 
+  <link href="{{ url_for('static',filename='fontawesome/css/fontawesome.css')}}" rel="stylesheet">
+  <link href="{{ url_for('static',filename='fontawesome/css/brands.css')}}"  rel="stylesheet">
+  <link href="{{ url_for('static',filename='fontawesome/css/solid.css')}}"  rel="stylesheet">
+
   <style>
     @import url("{{ url_for('static',filename='css/header-style.css')}}");
     @import url("{{ url_for('static',filename='css/blockly-page-body-style.css')}}");
@@ -41,34 +45,69 @@
   {% include 'header.html' %}
 
   <div id="main-container">
-    <div id="back-import-export-buttons-container">
-      <div id="go-back-to-home-button-wrap">
-        <button type="button" class="go-back-to-home">
-          <a href='/' id="open-home-href" style="color: white; text-decoration: none;">
-            Επιστροφή στην αρχική σελίδα
+    <div class="row custom_row">
+      <div class="col-10" >
+        <div id="blocklyDiv"></div>
+      </div>
+     
+      
+
+        <div id="buttons-container-right_kind" class="col-2">
+
+          <div id='button__headers_row_one_icon'>
+            <!-- <div id="button_fa_wrap">
+              <a onclick="jsfunction()" href="javascript:save_xml('{{ project_id }}');"  id="open-home-href" style="color: rgb(24, 21, 148); text-decoration: none;">
+              <i class="fa-solid fa-floppy-disk"></i>
+              </a>
+            </div> -->
+            <!-- <div id="button_spacer"></div> -->
+            <div id="button_fa_wrap"  >
+              <a href='/'   style="color: rgb(255, 136, 0); text-decoration: none;">
+              <i class="fa-solid fa-house"></i>
+              </a>
+            </div>
+          
+         </div>  
+        
+        <!-- <div id="terminal_div">
+          <div id="terminal_scrollable-content">
+          <p>FossBot Terminal...</p>
+        </div>
+        </div> -->
+
+        <div id="button__controls_row">
+        <div id="button_fa_wrap_controls">
+          <a onclick="javascript:runCode(1)" href="#"  style="color: rgb(56, 199, 0); text-decoration: none;">
+          <i class="fa-solid fa-circle-play"></i>
           </a>
-        </button>
+        </div>
+        <div id="button_fa_wrap_controls">
+          <a onclick="stop_script()" href="#"  style="color: rgb(199, 30, 0); text-decoration: none;">
+          <i class="fa-solid fa-circle-stop"></i>
+          </a>
+        </div>
       </div>
+       
+        <!-- <div id="right_buttons">
 
-      <!-- <div id="button-export">
-        <button onclick="save_xml('{{ project_id }}')" type="button" class="export">Αποθήκευση</button>
-      </div> -->
+          <button onclick="runCode('{{ project_id }}')" type="button" class="run">Τρέξε το πρόγραμμα!</button>
+        
+        </div>
+        <div id="right_buttons">
+          <button onclick="stop_script()" type="button" class="stop">Σταμάτα την εκτέλεση!</button>
+        </div> -->
+      </div>
     </div>
+    <!-- <div id="buttons-container">
+      
 
-    <div id="blocklyDiv"></div>
-
-    <div id="buttons-container">
-      <div id="runButton-wrap">
-        <button onclick="runCode('{{ project_id }}')" type="button" class="run">Τρέξε το πρόγραμμα!</button>
-      </div>
-
-      <div id="stopButton-wrap">
-        <button onclick="stop_script()" type="button" class="stop">Σταμάτα την εκτέλεση!</button>
-      </div>
-    </div>
+      
+       
+    </div> -->
+    {% include 'footer.html' %}
   </div>
 
-  {% include 'footer.html' %}
+ 
 
 
 
