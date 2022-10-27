@@ -81,6 +81,7 @@ button.go-back-to-home {
 }
 
 .block-container {
+  
   width: 100%;
   display: flex;
   flex-direction: row;

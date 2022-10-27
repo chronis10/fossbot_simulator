@@ -1,17 +1,17 @@
 /* Style the body */
 
 #blocklyDiv {
-  height: 70%;
+  height: 87vh;
   width: 100%;  
   top: 0px;
   padding-left: 0.7%;
   padding-right: 0.7%;
 }
 
-html,
+/* html,
 body {
   height: 100%;
-}
+} */
 
 body {
   background-color: #fff;
@@ -28,6 +28,44 @@ body {
   justify-content: center;
   flex-direction: row;
   padding: 0.5%;
+}
+
+#buttons-container {
+  
+  /* width: 100%; */
+  
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  /* padding: 0.5%; */
+}
+#terminal_div{
+  margin-top:10px;
+  padding:10px;
+  background-color: black;
+  color: #fff;
+  font-size: 14px;
+  height: 30vh;
+  border: 10px solid rgb(3, 3, 3);
+  border-radius: 8px;
+  line-height: 0.1;
+}
+
+#terminal_scrollable-content {
+  height: 25vh;
+  padding:10px;
+  overflow: auto;
+}
+
+
+#right_buttons{
+  margin: auto;
+  align-items: center;
+  /* width: 60%; */
+  padding: 5px;
+
 }
 
 #runButton-wrap {
@@ -74,6 +112,8 @@ button.stop {
 }
 
 
+
+
 #back-import-export-buttons-container {
   width: 100%;
   position: relative;
@@ -114,6 +154,16 @@ button.go-back-to-home {
 }
 
 button.export {
+  text-align: center;
+  border: 1px solid #0BA800;
+  background-color: #0BA800;
+  color: #fff;
+  min-width: 200px;
+  min-height: 40px;
+}
+
+
+button.export_img {
   text-align: center;
   border: 1px solid #0BA800;
   background-color: #0BA800;

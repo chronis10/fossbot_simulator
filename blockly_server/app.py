@@ -16,6 +16,8 @@ import glob
 import json
 import sys
 import webbrowser
+from xml.dom import minidom
+import io
 
 DEBUG = os.getenv('DEBUG')
 if DEBUG is None:
@@ -72,7 +74,6 @@ def create_kindergarten_files():
     info = "Default file for Kindergarten"
     project = Projects(title,info)
     db.session.add(project) 
-    print('dd')
     db.session.commit()
     db.session.refresh(project)
     os.mkdir(os.path.join(PROJECT_DIR,f'{project.project_id}'))
@@ -112,7 +113,14 @@ def blockly():
     print("------------------>",id)
     robot_name = get_robot_name()
     get_sound_effects()
-    return render_template('blockly.html', project_id=id, robot_name=robot_name)            
+    return render_template('blockly.html', project_id=id, robot_name=robot_name)           
+
+
+
+# @app.route('/test_terminal')
+# def test_terminal():
+#     socketio.emit('trm',  {'status': 'dokimh'}) 
+#     return { 'status': '200'}
 
 @app.route('/kindergarten')
 def kindergarten():
@@ -256,6 +264,13 @@ def handle_manual_control():
    execute_code(None,manual_control=True)
    emit('manual_control',  {'status': 'ok'})
 
+@socketio.on('terminal_msgs')
+def handle_terminal_msgs(data):
+    print(data)
+    socketio.emit('trm',  data)
+
+
+
 @socketio.on('execute_blockly')
 def handle_execute_blockly(data):
     try:
@@ -266,15 +281,16 @@ def handle_execute_blockly(data):
         result = execute_code(id)  
         emit('execute_blockly_result', result)
     except Exception as e:
+        print(e)
         emit('execute_blockly_result',  {'status': 'error when creating .py file or when running the .py file'})
 
 @socketio.on('send_xml')
 def handle_send_xml(data):
     try:
         id = data['id']
-        with open (os.path.join(PROJECT_DIR,f'{id}/{id}.xml'), "r") as myfile:
+        with open (os.path.join(PROJECT_DIR,f'{id}/{id}.xml'), "r", encoding="utf8") as myfile:
             data=myfile.readlines()
-        emit('send_xml_result', {'status': '200', 'data': data})     
+        emit('send_xml_result', {'status': '200', 'data': data})   
     except Exception as e:
         emit('send_xml_result',  {'status': 'file not found'})
 
@@ -283,11 +299,57 @@ def handle_save_xml(data):
     try: 
         id = data['id']
         code = data['code']
-        with open(os.path.join(PROJECT_DIR,f'{id}/{id}.xml'), "w") as fh:
+        
+        
+        project = Projects.query.get(id)        
+        
+        
+        code = code.replace('</xml>','')
+        extra_info = ''.join(['  <project>\n', f'    <title>{project.title}</title>\n', f'    <description>{project.info}</description>\n', '  </project>\n', '</xml>'])
+        code += extra_info
+        
+        with open(os.path.join(PROJECT_DIR,f'{id}/{id}.xml'), "w", encoding="utf8") as fh:
             fh.write(code)
         emit('save_xml_result', {'status': '200', 'result': 'Code saved with success'})
     except Exception as e:
+       
         emit('save_xml_result',  {'status': 'error occured', 'result': 'Code was not saved'})
+
+@app.route('/export_project/<int:id>')
+def export_project(id):
+    print(id)
+    path = os.path.join(PROJECT_DIR,f'{id}/{id}.xml')
+    return send_file(path, as_attachment=True)
+
+@app.route('/upload_project', methods=[ 'POST'])
+def upload_project():    
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            
+            return redirect("/")
+        file = request.files['file']
+        if file.filename == '':
+            
+            return redirect("/")
+        #in_memory_file = io.BytesIO()
+        #file.save(in_memory_file)
+        data = file.read().decode('utf-8')
+        docs = minidom.parseString(data)
+        pjs = docs.getElementsByTagName('project')[0]
+        title = pjs.getElementsByTagName('title')[0].firstChild.data
+        info = pjs.getElementsByTagName('description')[0].firstChild.data
+        project = Projects(title,info)
+        db.session.add(project)
+        db.session.commit()
+        db.session.refresh(project)        
+        os.mkdir(os.path.join(PROJECT_DIR,f'{project.project_id}'))
+        with open(os.path.join(PROJECT_DIR,f'{project.project_id}/{project.project_id}.xml'), "w", encoding="utf8") as fh:
+            fh.write(data)
+       
+    return redirect("/")
+    # print(id)
+    # path = os.path.join(PROJECT_DIR,f'{id}/{id}.xml')
+    # return send_file(path, as_attachment=True)
 
 def get_all_projects():
     projects = Projects.query.all()
@@ -300,7 +362,7 @@ def generate_py(code,id):
     template = env.get_template('template_code.py')
     code = textwrap.indent(text=code, prefix='  ', predicate=lambda line: True)
     output = template.render(code = code)
-    with open(os.path.join(PROJECT_DIR,f'{id}/{id}.py'), "w") as fh:
+    with open(os.path.join(PROJECT_DIR,f'{id}/{id}.py'), "w" , encoding=('utf-8')) as fh:
         fh.write(output)
 
 def execute_code(id,manual_control=False):
