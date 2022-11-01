@@ -16,5 +16,5 @@
 ## Software Development Team
 * Christos Chronis
 * Eleftheria Papageorgiou
-* Manoussos Linardakis
+* Manousos Linardakis
 
