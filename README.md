@@ -13,3 +13,8 @@
 3) Start the ```FossBot Simulator``` as Administrator
 4) Enjoy!
 
+## Software Development Team
+* Christos Chronis
+* Eleftheria Papageorgiou
+* Manoussos Linardakis
+
