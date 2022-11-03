@@ -96,15 +96,16 @@ def error_handler(e):
 def index():
     stop_now()
     robot_name = get_robot_name()
-    return render_template('home-page.html', robot_name=robot_name)
+    language = get_language()
+    return render_template('home-page.html', robot_name=robot_name, language=language)
 
 @socketio.on('get-all-projects')
 def handle_get_all_projects():
     projects_list = get_all_projects()
     print('getting all projects')
     print(projects_list)
-
-    emit('all-projects', { 'status': '200', 'data': projects_list})
+    language = get_language()
+    emit('all-projects', { 'status': '200', 'data': projects_list, 'language': language})
 
 @app.route('/blockly')
 def blockly():
@@ -113,7 +114,8 @@ def blockly():
     print("------------------>",id)
     robot_name = get_robot_name()
     get_sound_effects()
-    return render_template('blockly.html', project_id=id, robot_name=robot_name)           
+    language = get_language()
+    return render_template('blockly.html', project_id=id, robot_name=robot_name, language=language)           
 
 
 
@@ -142,7 +144,8 @@ def blockly_get_sound_effects():
 def admin_panel():
     stop_now()
     robot_name = get_robot_name()
-    return render_template('panel-page.html', robot_name=robot_name)
+    language = get_language()
+    return render_template('panel-page.html', robot_name=robot_name, language=language)
 
 @socketio.on('get_admin_panel_parameters')
 def handle_get_admin_panel_parameters():
@@ -434,7 +437,23 @@ def get_sound_effects():
             os.remove(os.path.join(DATA_DIR,'sound_effects.json'))
         with open(os.path.join(DATA_DIR,'sound_effects.json'), 'w') as out_file:
             json.dump(sounds_names, out_file)  
-             
+
+
+def get_language(): 
+    try:
+        parameters = load_parameters()
+        for key, value in parameters.items():
+            if key == 'language':
+                if value[2]['value'] == 'Ελληνικά':
+                    return 'el'
+                elif value[2]['value'] == 'English':
+                    return 'en'   
+                else:
+                    return 'el'      
+    except Exception as e:
+        print(e)
+        return 'el'
+
 if __name__ == '__main__':
     webbrowser.open("http://127.0.0.1:8080")
     socketio.run(app, host = '0.0.0.0',port=8080, debug=False)
