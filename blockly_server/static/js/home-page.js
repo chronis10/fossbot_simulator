@@ -183,3 +183,26 @@ function showRobotName() {
         document.getElementById("robot-name").innerHTML = window.location.hostname
     }
 }
+
+
+function setStringsEn() {
+    document.getElementById("head-title-id").innerHTML = get_string_translation_en("title");
+    document.getElementById("head-info-id").innerHTML = get_string_translation_en("info");
+
+    document.getElementById("general-instructions-id").innerHTML = get_string_translation_en("general_instructions");
+    document.getElementById("blocks-title-id").innerHTML = get_string_translation_en("blocks_title");
+    document.getElementById("kindergarten-version").innerHTML = get_string_translation_en("kindergarten_version");
+    document.getElementById("kindergarten-version-des").innerHTML = get_string_translation_en("kindergarten_version_des");
+
+    document.getElementById("modal-error-text").innerHTML = get_string_translation_en("error_txt");
+    document.getElementById("modal-success-text").innerHTML = get_string_translation_en("success");
+    document.getElementById("modal-projectname-space-text").innerHTML = get_string_translation_en("title_for_new_project");
+    document.getElementById("button-project-name").innerHTML = get_string_translation_en("ok");
+    document.getElementById("modal-project-description-space-text").innerHTML = get_string_translation_en("info_for_new_project");
+}
+
+function setStringsInChosenLanguage(language) {
+    if (language == 'en') {
+        setStringsEn()
+    }
+}
