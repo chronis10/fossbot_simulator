@@ -4,7 +4,6 @@ function get_string_translation_el(key){
 }
 
 var translations_el = {
-    "go_back_to_home_page": "Επιστροφή στην αρχική σελίδα",
     "save": "Αποθήκευση",
     "run_the_program": "Τρέξε το πρόγραμμα!",
     "stop_the_program": "Σταμάτα την εκτέλεση!",

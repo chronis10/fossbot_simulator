@@ -4,7 +4,6 @@ function get_string_translation_en(key){
 }
 
 var translations_en = {
-    "go_back_to_home_page": "Back to home page",
     "save": "Save",
     "run_the_program": "Run the program!",
     "stop_the_program": "Stop the program!",
