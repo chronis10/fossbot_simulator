@@ -3,34 +3,62 @@ let parameters_array = [];
 
 function loadSettings(data) {
     console.log('Loading settings of the projects');
-
     parameters = data.parameters;
-    console.log('parameters:', parameters);
-
     parameters_array = Object.values(parameters);
-    keys_array = Object.keys(parameters);
 
-    for (var i = 0; i < keys_array.length; i++) {
-        const parameter_key = keys_array[i];
+    let current_language;
+    for (var i = 0; i < parameters_array.length; i++) {
         const parameter = parameters_array[i];
-        console.log('parameter:', parameter_key);
-        
+        if (parameter[0]['name_el'] == "Γλώσσα") {
+            current_language = parameter[2]['value']
+        }
+    }
 
-        if(parameter['name'] == "Όνομα ρομπότ") {
+    for (var i = 0; i < parameters_array.length; i++) {
+        const parameter = parameters_array[i];
+        if (parameter[0]['name_el'] == "Όνομα ρομπότ") {
+            let name = '';
+            if (current_language == 'English') {
+                name = parameter[1]['name_en'];
+            } else {
+                name = parameter[0]['name_el'];
+            }
             document.getElementById("body-table-parameters").insertRow(-1).innerHTML =
-            '<tr>' +
-            '<td>' + parameter['name'] + '</td>' +
-            '<td>' + parameter['default'] + '</td>' +
-            '<td>' + '<input type="text" id="' + i + '" value="' + parameter['value'] + '" name="' + parameter_key +  '">' + '</td>' +
-            '</tr>';
+                '<tr>' +
+                '<td>' + name + '</td>' +
+                '<td>' + parameter[3]['default'] + '</td>' +
+                '<td>' + '<input type="text" id="' + i + '" value="' + parameter[2]['value'] + '">' + '</td>' +
+                '</tr>';
+        } else if (parameter[0]['name_el'] == "Γλώσσα") {
+            if (current_language == 'English') {
+                document.getElementById("body-table-parameters").insertRow(-1).innerHTML =
+                    '<tr>' +
+                    '<td>' + parameter[1]['name_en'] + '</td>' +
+                    '<td>' + parameter[3]['default'] + '</td>' +
+                    '<td>' + '<select name="languages" id="' + i + '"> <option>Ελληνικά</option> <option selected>English</option> </select>' + '</td>' +
+                    '</tr>';
+            } else {
+                document.getElementById("body-table-parameters").insertRow(-1).innerHTML =
+                    '<tr>' +
+                    '<td>' + parameter[0]['name_el'] + '</td>' +
+                    '<td>' + parameter[3]['default'] + '</td>' +
+                    '<td>' + '<select name="languages" id="' + i + '"> <option selected>Ελληνικά</option> <option>English</option> </select>' + '</td>' +
+                    '</tr>';
+            }
         } else {
+            let name = '';
+            if (current_language == 'English') {
+                name = parameter[1]['name_en'];
+            } else {
+                name = parameter[0]['name_el'];
+            }
             document.getElementById("body-table-parameters").insertRow(-1).innerHTML =
-            '<tr>' +
-            '<td>' + parameter['name'] + '</td>' +
-            '<td>' + parameter['default'] + '</td>' +
-            '<td>' + '<input type="number" id="' + i + '" value="' + parameter['value'] + '" name="' + parameter_key + '">' + '</td>' +
-            '</tr>';
-        } 
+                '<tr>' +
+                '<td>' + name + '</td>' +
+                '<td>' + parameter[3]['default'] + '</td>' +
+                '<td>' + '<input type="number" id="' + i + '" value="' + parameter[2]['value'] + '">' + '</td>' +
+                '</tr>';
+        }
     }
 }
 
@@ -44,8 +72,6 @@ async function saveSettings() {
         parameters_to_send[par_name] = value;
     }
 
-
-    console.log("parameters to send : ", parameters_to_send);
     const result = await sendParameters(JSON.stringify(parameters_to_send));
 
     if (result.status == 200) {
@@ -53,5 +79,22 @@ async function saveSettings() {
     } else {
         const error_text = "Υπήρξε πρόβλημα κατά την αποθήκευση των ρυθμίσεων του ρομπότ. Οι ρυμθίσεις δεν αποθηκεύτηκαν!";
         showModalError(error_text);
+    }
+}
+
+function setStringsEn() {
+    document.getElementById("panel-title-wrap").innerHTML = get_string_translation_en("panel_title");
+    document.getElementById("panel-description-txt").innerHTML = get_string_translation_en("blocks_title");
+    document.getElementById("parameter-name-id").innerHTML = get_string_translation_en("parameter_name");
+    document.getElementById("default-value-id").innerHTML = get_string_translation_en("default_value");
+    document.getElementById("value-id").innerHTML = get_string_translation_en("value");
+    document.getElementById("save-settings-id").innerHTML = get_string_translation_en("save_changes");
+    document.getElementById("modal-error-text").innerHTML = get_string_translation_en("error_txt");
+    document.getElementById("modal-success-text").innerHTML = get_string_translation_en("success");
+}
+
+function setStringsInChosenLanguage(language) {
+    if (language == 'en') {
+        setStringsEn()
     }
 }
