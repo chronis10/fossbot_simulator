@@ -126,6 +126,15 @@ label, button {
   
 }
 
+#button_fa_wrap_controls_small{
+  height: 40px;
+  width: 40px;
+  font-size: 20px;
+  display: inline-block;
+  
+  
+}
+
 .custom_row_home{
   margin:0;
   width: 100%;

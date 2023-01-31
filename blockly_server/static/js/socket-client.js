@@ -67,6 +67,23 @@ function stopScript() {
   socket.emit('stop_script');
 }
 
+function open_audio_folder() {
+  
+  socket.emit('open_audio_folder');
+}
+
+function open_stage_folder() {
+  socket.emit('open_stage_folder');
+}
+
+function openMap(data) {
+  socket.emit('open_map',data);
+}
+
+function resetStage() {
+  socket.emit('reset_stage');
+}
+
 const sendXml = function (id) {
   return new Promise(function(resolve, reject) {
     socket.emit('send_xml', { 'id': id });

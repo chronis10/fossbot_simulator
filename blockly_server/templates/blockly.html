@@ -32,6 +32,7 @@
   <link href="{{ url_for('static',filename='fontawesome/css/fontawesome.css')}}" rel="stylesheet">
   <link href="{{ url_for('static',filename='fontawesome/css/brands.css')}}"  rel="stylesheet">
   <link href="{{ url_for('static',filename='fontawesome/css/solid.css')}}"  rel="stylesheet">
+  <link href="{{ url_for('static',filename='fontawesome/css/all.css')}}"  rel="stylesheet">
 
   <style>
     @import url("{{ url_for('static',filename='css/header-style.css')}}");
@@ -75,7 +76,8 @@
             <div id="button_fa_wrap">
               <a onclick="save_xml('{{ project_id }}')" href="#" id="open-home-href" style="color: rgb(24, 21, 148); text-decoration: none;">
               <i class="fa-solid fa-floppy-disk"></i>
-              </a>)
+              </a>
+              
             </div>
             <!-- <div id="button_spacer"></div> -->
             <div id="button_fa_wrap" >
@@ -83,7 +85,6 @@
               <i class="fa-solid fa-house"></i>
               </a>
             </div>
-          
          </div>  
         
         <div id="terminal_div">
@@ -91,8 +92,28 @@
           <p>FossBot Terminal...</p>
         </div>
         </div>
+        
 
+      </br>
+      <div id="button__controls_row">
+        <select id="stage_select" class="form-select" aria-label="Επιλέξτε πίστα">
+          <option value="-1" selected>Επιλέξτε πίστα</option>
+          {% for scene in scenes %}
+            <option >{{scene}}</option>
+          {% endfor %}
+          
+        </select>
+
+        <div id="button_fa_wrap_controls_small">
+          <a onclick="open_map()" href="#"  style="color: rgb(23, 76, 155); text-decoration: none;">
+          <i class="fa-solid fa-globe"></i>
+          </a>
+        </div>
+
+      </div>
+    
         <div id="button__controls_row">
+
         <div id="button_fa_wrap_controls">
           <a onclick="runCode('{{ project_id }}')" href="#"  style="color: rgb(56, 199, 0); text-decoration: none;">
           <i class="fa-solid fa-circle-play"></i>
@@ -103,7 +124,14 @@
           <i class="fa-solid fa-circle-stop"></i>
           </a>
         </div>
+        <div id="button_fa_wrap_controls">
+          <a onclick="reset_stage()" href="#"  style="color: rgb(253, 165, 1); text-decoration: none;">
+          <i class="fa-solid fa-circle-dot"></i>
+          </a>
+        </div>
+      
       </div>
+    
        
         <!-- <div id="right_buttons">
 

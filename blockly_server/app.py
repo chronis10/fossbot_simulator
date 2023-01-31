@@ -18,12 +18,18 @@ import sys
 import webbrowser
 from xml.dom import minidom
 import io
+from robot.roboclass import Agent
+from multiprocessing import Process
+
+
 
 DEBUG = os.getenv('DEBUG')
 if DEBUG is None:
     DEBUG = False
 
 SCRIPT_PROCCESS = None
+COPPELIA_PROCESS = None
+CURRENT_STAGE = None
 app = Flask(__name__)
 APP_DIR = os.path.abspath(os.path.dirname(__file__))
 BASED_DIR = os.path.abspath(os.path.dirname(sys.executable)) 
@@ -43,6 +49,8 @@ socketio = SocketIO(app)
 
 db = SQLAlchemy(app)
 
+agent = Agent()
+
 class Projects(db.Model, SerializerMixin):
     project_id = db.Column('project_id', db.Integer, primary_key = True)
     title = db.Column(db.String(100))
@@ -50,9 +58,30 @@ class Projects(db.Model, SerializerMixin):
     def __init__(self, title,info):
         self.title = title
         self.info = info
-        
+
+def execute_blocks(code):
+    agent.execute(code)
+
+def stop_coppelia():
+    agent.stop()
+
+# def open_coppelia():
+#     start_coppelia()
+
+def start_coppelia(stage):
+    
+    try:
+        agent.stop()
+    except:
+        pass
+    stage_path = f'"{stage}"'
+    coppelia_path = '"C:\\Program Files\\CoppeliaRobotics\\CoppeliaSimEdu\\coppeliaSim.exe"'
+    os.system(f'cmd /k  "{coppelia_path} -gGUIITEMS_0 -s -q {stage_path}" ')
+
+    
 @app.before_first_request
 def before_first_request():
+
     if not os.path.exists(DATA_DIR):
         os.mkdir(DATA_DIR)
         os.mkdir(PROJECT_DIR)
@@ -64,7 +93,7 @@ def before_first_request():
     except:
         db.create_all()
 
-        if len(db.session.query(Projects)) == 0: 
+        if len(db.session.query(Projects)) == 0:
             create_kindergarten_files()
     if not os.path.exists(os.path.join(DATA_DIR,'admin_parameters.yaml')):
         shutil.copy(os.path.join(APP_DIR,'utils/code_templates/admin_parameters.yaml'),os.path.join(DATA_DIR,'admin_parameters.yaml'))
@@ -113,9 +142,8 @@ def blockly():
     print("------------------>",id)
     robot_name = get_robot_name()
     get_sound_effects()
-    return render_template('blockly.html', project_id=id, robot_name=robot_name)           
-
-
+    scenes = get_scenes()
+    return render_template('blockly.html', project_id=id, robot_name=robot_name,scenes=scenes)           
 
 # @app.route('/test_terminal')
 # def test_terminal():
@@ -126,8 +154,9 @@ def blockly():
 def kindergarten():
     stop_now()
     robot_name = get_robot_name()
+    scenes = get_scenes()
     # get_sound_effects()
-    return render_template('blockly_simple.html', project_id=1, robot_name=robot_name)  
+    return render_template('blockly_simple.html', project_id=1, robot_name=robot_name,scenes=scenes)  
 
 @socketio.on('get_sound_effects')
 def blockly_get_sound_effects():
@@ -269,20 +298,66 @@ def handle_terminal_msgs(data):
     print(data)
     socketio.emit('trm',  data)
 
+@socketio.on('testmsg')
+def test_msgs(data):
+    print('test')
+    #socketio.emit('trm',  data)
+
+
 
 
 @socketio.on('execute_blockly')
 def handle_execute_blockly(data):
+    global SCRIPT_PROCCESS
+    socketio.emit('execute_blockly_robot', {'status': '200', 'result': 'Code saved with success'})
     try:
         id = data['id']
         code = data['code']
-        generate_py(code,id)
+        print(code)
         stop_script()
-        result = execute_code(id)  
-        emit('execute_blockly_result', result)
+        SCRIPT_PROCCESS = Process(target=execute_blocks, args=(code,),daemon=True)
+        SCRIPT_PROCCESS.start()
+        print(SCRIPT_PROCCESS)
+        generate_py(code,id)
+        
+        #result = execute_code(id)  
+        #emit('execute_blockly_result', result)
+        emit('execute_blockly_result', {'status': '200'})
     except Exception as e:
         print(e)
         emit('execute_blockly_result',  {'status': 'error when creating .py file or when running the .py file'})
+
+
+
+@socketio.on('open_map')
+def open_map(data):
+    global CURRENT_STAGE,COPPELIA_PROCESS
+    files = glob.glob(os.path.join(DATA_DIR,f'Coppelia_Scenes/{data}')) 
+    if ".ttt" in files[0]:
+        CURRENT_STAGE = files[0]
+        reset_coppelia()
+        emit('execute_blockly_result', {'status': '200'})
+
+
+@socketio.on('open_audio_folder')
+def open_audio_folder():
+    os.startfile(os.path.realpath(os.path.join(DATA_DIR,'sound_effects')))
+
+
+@socketio.on('open_stage_folder')
+def open_map_folder():
+    os.startfile(os.path.realpath(os.path.join(DATA_DIR,'Coppelia_Scenes')))
+
+@socketio.on('reset_stage')
+def reset_coppelia():
+    global COPPELIA_PROCESS,CURRENT_STAGE
+    if COPPELIA_PROCESS is not None:
+        COPPELIA_PROCESS.terminate()
+    COPPELIA_PROCESS = Process(target=start_coppelia,args=(CURRENT_STAGE,),daemon=False)
+    COPPELIA_PROCESS.start()
+    #emit('execute_blockly_result', {'status': '200'})
+
+
 
 @socketio.on('send_xml')
 def handle_send_xml(data):
@@ -320,6 +395,7 @@ def export_project(id):
     print(id)
     path = os.path.join(PROJECT_DIR,f'{id}/{id}.xml')
     return send_file(path, as_attachment=True)
+
 
 @app.route('/upload_project', methods=[ 'POST'])
 def upload_project():    
@@ -381,22 +457,52 @@ def execute_code(id,manual_control=False):
         SCRIPT_PROCCESS = subprocess.Popen(['python', os.path.join(APP_DIR,'utils/manual_control.py')])
         return {'status': 'started'}
 
+
 def stop_now():
     global SCRIPT_PROCCESS
-    if SCRIPT_PROCCESS is not None:   
-        if sys.platform == 'win32':
-            os.system("taskkill /F /pid "+str(SCRIPT_PROCCESS.pid))
-        else:
-            os.kill(SCRIPT_PROCCESS.pid, signal.SIGINT)
-
-        SCRIPT_PROCCESS.terminate()
-        print(SCRIPT_PROCCESS.poll())
-        SCRIPT_PROCCESS = None
-        print( 'stopped')
-        return {'status': 'stopped'}
-    else:
-        print( 'nothing running')
+    print(SCRIPT_PROCCESS)
+    print('stop')
+    if SCRIPT_PROCCESS is None:
         return{'status': 'nothing running'}
+    else:
+        try:
+            SCRIPT_PROCCESS.terminate()
+            return {'status': 'stopped'}
+        except Exception as e:
+            print(e)
+            return{'status': 'nothing running'}
+    # if SCRIPT_PROCCESS is not None:   
+    #     if sys.platform == 'win32':
+    #         os.system("taskkill /F /pid "+str(SCRIPT_PROCCESS.pid))
+    #     else:
+    #         os.kill(SCRIPT_PROCCESS.pid, signal.SIGINT)
+
+    #     SCRIPT_PROCCESS.terminate()
+    #     print(SCRIPT_PROCCESS.poll())
+    #     SCRIPT_PROCCESS = None
+    #     print( 'stopped')
+    #     return {'status': 'stopped'}
+    # else:
+    #     print( 'nothing running')
+    #     return{'status': 'nothing running'}
+
+
+# def stop_now():
+#     global SCRIPT_PROCCESS
+#     if SCRIPT_PROCCESS is not None:   
+#         if sys.platform == 'win32':
+#             os.system("taskkill /F /pid "+str(SCRIPT_PROCCESS.pid))
+#         else:
+#             os.kill(SCRIPT_PROCCESS.pid, signal.SIGINT)
+
+#         SCRIPT_PROCCESS.terminate()
+#         print(SCRIPT_PROCCESS.poll())
+#         SCRIPT_PROCCESS = None
+#         print( 'stopped')
+#         return {'status': 'stopped'}
+#     else:
+#         print( 'nothing running')
+#         return{'status': 'nothing running'}
         
 def load_parameters():
     with open(os.path.join(DATA_DIR,'admin_parameters.yaml'), encoding=('utf-8')) as file:
@@ -415,10 +521,15 @@ def get_robot_name():
             return value['value']
     return " "
 
+def get_scenes():
+    files = glob.glob(os.path.join(DATA_DIR,'Coppelia_Scenes/*.ttt')) 
+    names = [item.split("\\")[-1] for item in files]
+    return names
+
 def get_sound_effects():
     print("Getting sounds")    
     if os.path.exists(os.path.join(DATA_DIR,'sound_effects')):
-        mp3_sounds_list = glob.glob(os.path.join(DATA_DIR,'sound_effects/*.mp3'))        
+        mp3_sounds_list = glob.glob(os.path.join(DATA_DIR,'sound_effects/*.mp3'))
         sounds_names = []
         for sound in mp3_sounds_list: 
             # split_list = sound.split("/")
@@ -436,5 +547,6 @@ def get_sound_effects():
             json.dump(sounds_names, out_file)  
              
 if __name__ == '__main__':
-    webbrowser.open("http://127.0.0.1:8080")
-    socketio.run(app, host = '0.0.0.0',port=8080, debug=False)
+    
+    webbrowser.open_new("http://127.0.0.1:8081")
+    socketio.run(app, host = '0.0.0.0',port=8081, debug=True)

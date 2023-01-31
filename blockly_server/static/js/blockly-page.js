@@ -83,3 +83,31 @@ function stop_script() {
   stopScript();
 }
 
+// function open_map() {
+//   //importD();
+//   //openMap();
+// }
+
+
+
+function open_map() {
+  var e = document.getElementById("stage_select");
+  //var value = e.value;
+  var text = e.options[e.selectedIndex].text;
+  openMap(text);
+  
+  // let input = document.createElement('input');
+  // input.type = 'file';
+  // input.onchange = _this => {
+  //           let files =   Array.from(input.files);
+  //           alert(files[0]['name']);
+  //           openMap(files);
+  //           console.log(files);
+  //       };
+  // input.click();
+}
+
+function reset_stage() {
+  resetStage();
+}
+

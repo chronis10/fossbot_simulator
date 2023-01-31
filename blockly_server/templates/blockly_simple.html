@@ -74,6 +74,7 @@
           <p>FossBot Terminal...</p>
         </div>
         </div> -->
+      
 
         <div id="button__controls_row">
         <div id="button_fa_wrap_controls">
@@ -86,7 +87,29 @@
           <i class="fa-solid fa-circle-stop"></i>
           </a>
         </div>
+        <div id="button_fa_wrap_controls">
+          <a onclick="reset_stage()" href="#"  style="color: rgb(253, 165, 1); text-decoration: none;">
+          <i class="fa-solid fa-circle-dot"></i>
+          </a>
+        </div>
       </div>
+    </br>
+    <div id="button__controls_row">
+      <select id="stage_select" class="form-select" aria-label="Επιλέξτε πίστα">
+        <option value="-1" selected>Επιλέξτε πίστα</option>
+        {% for scene in scenes %}
+          <option >{{scene}}</option>
+        {% endfor %}
+        
+      </select>
+
+      <div id="button_fa_wrap_controls_small">
+        <a onclick="open_map()" href="#"  style="color: rgb(23, 76, 155); text-decoration: none;">
+        <i class="fa-solid fa-globe"></i>
+        </a>
+      </div>
+
+    </div>
        
         <!-- <div id="right_buttons">
 
