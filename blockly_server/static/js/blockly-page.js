@@ -6,9 +6,9 @@ async function save_xml(id) {
   const result = await saveXml(id, xmlText)
   const status = result.status
   if (status == '200') {
-    showModalSuccess("Ο κώδικας αποθηκεύτηκε με επιτυχία!");
+    showModalSuccess("Project Saved!");
   } else {
-    showModalError("Υπήρξε σφάλμα κατά την αποθήκευση του κώδικα! Ξαναπροσπάθησε!")
+    showModalError("Error on saving!")
   }
 }
 
@@ -39,7 +39,7 @@ async function loadProject() {
       loadXml(result.data);
     else {
       console.log('Error when getting project\n', err);
-      showModalError("Υπήρξε σφάλμα στην διαδικασία να φορτώσει ο κώδικας! Παρακαλώ ξαναπροσπάθησε!");
+      showModalError("Error on blocks loading!");
     }
   }
 }
@@ -59,14 +59,14 @@ async function runCode(id) {
     console.log("no code to run");
 
     //show modal
-    showModalError("Δεν υπάρχουν μπλοκς στον χώρο εργασίας για να μπορέσει να τρέξει το ρομπότ!")
+    showModalError("No Blocks detected!")
     return;
   }
 
   const result = await sendCode(id, blockly_code)
   const status = result.status
   if (status == 'started') {
-    showModalSuccess("Ο κώδικας τρέχει με επιτυχία!");
+    showModalSuccess("The program running successfully!");
   }
   let xmlDom = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
   let xmlText = Blockly.Xml.domToPrettyText(xmlDom);
@@ -74,7 +74,7 @@ async function runCode(id) {
   const result_save = await saveXml(id, xmlText);
 
   if (result_save.status == 200) {
-    console.log("Ο κώδικας αποθήκευτηκε με επιτυχία!");
+    console.log("The program running successfully!");
   }
 }
 

@@ -9,7 +9,7 @@
   <script src="{{ url_for('static',filename='modules/blockly.min.js')}}"></script>
   <script src="{{ url_for('static',filename='modules/blockly_compressed.js')}}"></script>
   <script src="{{ url_for('static',filename='modules/blocks_compressed.js')}}"></script>
-  <script src="{{ url_for('static',filename='modules/msg/el.js')}}"></script>
+  <script src="{{ url_for('static',filename='modules/msg/en.js')}}"></script>
   <script src="{{ url_for('static',filename='modules/jquery-3.5.0.js')}}"></script>
   <script src="{{ url_for('static',filename='modules/python_compressed.js')}}"></script>
 
@@ -96,7 +96,7 @@
     </br>
     <div id="button__controls_row">
       <select id="stage_select" class="form-select" aria-label="Επιλέξτε πίστα">
-        <option value="-1" selected>Επιλέξτε πίστα</option>
+        <option value="-1" selected>Select stage</option>
         {% for scene in scenes %}
           <option >{{scene}}</option>
         {% endfor %}
@@ -136,7 +136,6 @@
 
 
   <xml  id="toolbox" style="display: none">
-    <block type="move_forward_default"></block>
     <block type="move_forward_default"></block>
     <block type="move_reverse_default"></block>
     <block type="turn_right_90"></block>
