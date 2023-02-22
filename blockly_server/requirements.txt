@@ -8,4 +8,4 @@ Flask-Cors
 psutil
 eventlet
 Flask_SocketIO
-git+https://github.com/chronis10/fossbot_source.git --install-option="--platform=sim"
+fossbot-lib

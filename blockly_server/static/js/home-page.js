@@ -29,26 +29,21 @@ function loadProjects(data) {
                     '<td>' + project['title'] +'</td>'+
                     '<td>' + project['info'] +'</td>'+
                 
-                    '<td> ' + `<div id="button__controls_row">
-                                <div id="button_fa_wrap_controls_table">
-                                <a onclick="jsfunction()" href="javascript:runCode(` + project['project_id'] +`);"  style="color: rgb(56, 199, 0); text-decoration: none;">
-                                <i class="fa-solid fa-circle-play"></i>
-                                </a>
-                                </div>
-                                <div id="button_fa_wrap_controls_table">
-                                <a onclick="jsfunction()" href="javascript:stop_script();"  style="color: rgb(199, 30, 0); text-decoration: none;">
-                                <i class="fa-solid fa-circle-stop"></i>
-                                </a>
-                                </div>
-                            ` +
-                            // '<div id="run-Blockly-Button-container" class="run-Blockly-Button-container">' +
-                            //     '<div id="run-Blockly-Button-wrap" class="run-Blockly-Button-wrap">' +
-                            //         '<button onclick="execute_script('+ project['project_id'] +')" type="button" class="run-Blockly" id="open-Blockly">' +
-                            //             'Εκτέλεση' +
-                            //         '</button>' +
-                            //     '</div>' +
-                            // '</div>' +
-                    '</td>' +
+                    // '<td> ' + 
+                    // `<div id="button__controls_row">
+                    //             <div id="button_fa_wrap_controls_table">
+                    //             <a onclick="jsfunction()" href="javascript:runCode(` + project['project_id'] +`);"  style="color: rgb(56, 199, 0); text-decoration: none;">
+                    //             <i class="fa-solid fa-circle-play"></i>
+                    //             </a>
+                    //             </div>
+                    //             <div id="button_fa_wrap_controls_table">
+                    //             <a onclick="jsfunction()" href="javascript:stop_script();"  style="color: rgb(199, 30, 0); text-decoration: none;">
+                    //             <i class="fa-solid fa-circle-stop"></i>
+                    //             </a>
+                    //             </div>
+                    //         ` +
+
+                    // '</td>' +
                     '<td>' + 
                     `<div id="button__controls_row">
                                 <div id="button_fa_wrap_controls_table">

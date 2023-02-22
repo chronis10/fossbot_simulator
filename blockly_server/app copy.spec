@@ -8,7 +8,7 @@ a = Analysis(
     ['app.py'],
     pathex=[],
     binaries=[],
-    datas=[('templates', 'templates'), ('utils', 'utils'), ('static', 'static'), ('robot', 'robot'), ('lib', 'lib')],
+    datas=[('templates', 'templates'), ('utils', 'utils'), ('static', 'static'), ('lib', 'lib')],
     hiddenimports=[
         'engineio.async_drivers.threading',
                 'eventlet.hubs.epolls',
@@ -22,9 +22,7 @@ a = Analysis(
                 'dns.versioned',
                 'dns.e164',
                 'dns.namedict',
-                'dns.tsigkeyring',
-                'robot.roboclass'
-                 ],
+                'dns.tsigkeyring' ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],

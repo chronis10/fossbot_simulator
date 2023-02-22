@@ -19,8 +19,8 @@ import webbrowser
 from xml.dom import minidom
 import io
 from robot.roboclass import Agent
-from multiprocessing import Process
-
+from multiprocessing import Process,freeze_support
+import threading
 
 
 DEBUG = os.getenv('DEBUG')
@@ -59,7 +59,9 @@ class Projects(db.Model, SerializerMixin):
         self.title = title
         self.info = info
 
+
 def execute_blocks(code):
+    #print('hello')
     agent.execute(code)
 
 def stop_coppelia():
@@ -74,9 +76,9 @@ def start_coppelia(stage):
         agent.stop()
     except:
         pass
-    stage_path = f'"{stage}"'
-    coppelia_path = '"C:\\Program Files\\CoppeliaRobotics\\CoppeliaSimEdu\\coppeliaSim.exe"'
-    os.system(f'cmd /k  "{coppelia_path} -gGUIITEMS_0 -s -q {stage_path}" ')
+    # stage_path = f'"{stage}"'
+    # coppelia_path = '"C:\\Program Files\\CoppeliaRobotics\\CoppeliaSimEdu\\coppeliaSim.exe"'
+    # os.system(f'cmd /k  "{coppelia_path} -gGUIITEMS_0 -s -q {stage_path}" ')
 
     
 @app.before_first_request
@@ -314,11 +316,15 @@ def handle_execute_blockly(data):
         id = data['id']
         code = data['code']
         print(code)
-        stop_script()
-        SCRIPT_PROCCESS = Process(target=execute_blocks, args=(code,),daemon=True)
-        SCRIPT_PROCCESS.start()
-        print(SCRIPT_PROCCESS)
-        generate_py(code,id)
+        try:
+            stop_script()
+            #SCRIPT_PROCCESS = threading.Thread(target=execute_blocks, args=(code,))
+            SCRIPT_PROCCESS = Process(target=execute_blocks, args=(code,),daemon=True)
+            SCRIPT_PROCCESS.start()
+        except Exception as e:
+            print(e)
+        #print(SCRIPT_PROCCESS)
+        #generate_py(code,id)
         
         #result = execute_code(id)  
         #emit('execute_blockly_result', result)
@@ -547,6 +553,6 @@ def get_sound_effects():
             json.dump(sounds_names, out_file)  
              
 if __name__ == '__main__':
-    
+    freeze_support()
     webbrowser.open_new("http://127.0.0.1:8081")
     socketio.run(app, host = '0.0.0.0',port=8081, debug=True)

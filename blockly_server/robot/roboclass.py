@@ -38,9 +38,13 @@ class Communication():
  
 class Agent():
     def __init__(self):
+       
         APP_DIR = os.path.abspath(os.path.dirname(__file__))
-        DATA_DIR = os.path.dirname(os.path.dirname(APP_DIR))
+        BASED_DIR = os.path.abspath(os.path.dirname(sys.executable)) 
+        #DATA_DIR = os.path.dirname(os.path.dirname(APP_DIR))
+        DATA_DIR =  os.path.join(BASED_DIR,'data')
         CONF_DIR = os.path.join(DATA_DIR,'admin_parameters.yaml')
+        #print(CONF_DIR)
         FILE_PARAM = load_parameters(path=CONF_DIR)
         SIM_IDS = configuration.SimRobotIds(**FILE_PARAM["simulator_ids"])
         
@@ -61,12 +65,14 @@ class Agent():
         coms = Communication()
         transmit = coms.transmit
         exec(code)
+        
         robot.exit()
     
     def stop(self):
-        robot = SimuFossBot(parameters=self.parameters)
-        id = robot.client_id
-        sim.simxStopSimulation(id,sim.simx_opmode_blocking)
+        pass
+        # robot = SimuFossBot(parameters=self.parameters)
+        # id = robot.client_id
+        # sim.simxStopSimulation(id,sim.simx_opmode_blocking)
      
 
 if __name__ == '__main__':
