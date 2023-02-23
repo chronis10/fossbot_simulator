@@ -9,3 +9,5 @@ psutil
 eventlet
 Flask_SocketIO
 fossbot-lib
+Flask-Babel
+simple-websocket

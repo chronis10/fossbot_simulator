@@ -9,7 +9,7 @@
   <script src="{{ url_for('static',filename='modules/blockly.min.js')}}"></script>
   <script src="{{ url_for('static',filename='modules/blockly_compressed.js')}}"></script>
   <script src="{{ url_for('static',filename='modules/blocks_compressed.js')}}"></script>
-  <script src="{{ url_for('static',filename='modules/msg/en.js')}}"></script>
+  <script src="{{ url_for('static',filename='modules/msg/'+locale+'.js')}}"></script>
   <script src="{{ url_for('static',filename='modules/jquery-3.5.0.js')}}"></script>
   <script src="{{ url_for('static',filename='modules/python_compressed.js')}}"></script>
 
@@ -21,7 +21,9 @@
   <script src="{{ url_for('static',filename='js/socket-client.js')}}"></script>
   <script src="{{ url_for('static',filename='js/modals.js')}}"></script>
   <script defer src="{{ url_for('static',filename='js/blockly-page.js')}}"></script>
-  <script defer src="{{ url_for('static',filename='js/blockly/workspace.js')}}"></script>
+
+  
+  <script defer src="{{ url_for('static',filename='js/blockly/workspace_'+locale+'.js')}}"></script>
 
   <link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap.min.css')}}">
   <script src="{{ url_for('static',filename='modules/jquery.slim.min.js')}}"></script>
@@ -155,7 +157,7 @@
   
 
   <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
-    <category name="Logic" colour="#5B80A5">
+    <category name="{{ gettext('Logic')}}" colour="#5B80A5">
       <block type="controls_if"></block>
       <block type="logic_compare"></block>
       <block type="logic_operation"></block>
@@ -169,7 +171,7 @@
       <block type="controls_if">
         <mutation elseif="1" else="1"></mutation>
     </category>
-    <category name="Loops" colour="#5BA55B">
+    <category name="{{ gettext('Loops')}}" colour="#5BA55B">
       <block type="controls_repeat_ext">
         <value name="TIMES">
           <shadow type="math_number">
@@ -198,9 +200,9 @@
       <block type="controls_forEach"></block>
       <block type="controls_flow_statements"></block>
     </category>
-    <category name="Variables" custom="VARIABLE" colour="%{BKY_VARIABLES_HUE}">
+    <category name="{{ gettext('Variables')}}" custom="VARIABLE" colour="%{BKY_VARIABLES_HUE}">
     </category>
-    <category name="Movement" colour="#995ba5">
+    <category name="{{ gettext('Movement')}}" colour="#995ba5">
       <block type="move_forward_distance">
         <field name="number_of_steps">0</field>
       </block>
@@ -233,7 +235,7 @@
       <!-- <block type="rotate_default">
       </block> -->
     </category>
-    <category name="Operators" colour="#5B67A5">
+    <category name="{{ gettext('Operators')}}" colour="#5B67A5">
       <block type="math_number">
         <field name="NUM">123</field>
       </block>
@@ -334,7 +336,7 @@
         </value>
       </block>
     </category>
-    <category name="Text" colour="#5BA58C">
+    <category name="{{ gettext('Text')}}" colour="#5BA58C">
       <block type="text"></block>
       <block type="text_join"></block>
       <block type="text_append">
@@ -408,7 +410,7 @@
         </value>
       </block>
     </category>
-    <category name="Lists" colour="%{BKY_LISTS_HUE}">
+    <category name="{{ gettext('Lists')}}" colour="%{BKY_LISTS_HUE}">
       <block type="lists_create_with">
         <mutation items="0"></mutation>
       </block>
@@ -460,7 +462,7 @@
       <block type="lists_sort"></block>
     </category>
 
-    <category name="Interaction" colour="#995ba5">
+    <category name="{{ gettext('Interaction')}}" colour="#995ba5">
       <block type="play_sound">
       </block>
       <block type="set_color">
@@ -476,7 +478,7 @@
       
     </category>
 
-    <category name="Sensors" colour="#A5935B">
+    <category name="{{ gettext('Sensors')}}" colour="#A5935B">
       <!--<block type="temperature"> </block>
       <block type="humidity"> </block>-->
       <!-- <block type="battery"> </block> -->

@@ -63,7 +63,7 @@ Blockly.Blocks['move_forward_distance'] = {
     this.appendDummyInput()
       .appendField("Move forward for")
       .appendField(new Blockly.FieldNumber(0, 0, 1000), "number_of_steps")
-      .appendField("εκατοστά");
+      .appendField("cm");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(290);

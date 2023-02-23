@@ -20,8 +20,10 @@ from xml.dom import minidom
 import io
 from robot.roboclass import Agent
 from multiprocessing import Process,freeze_support
-import threading
+from threading import Thread
+from flask_babel import Babel
 
+from utils.systray_mode import systray_agent
 
 DEBUG = os.getenv('DEBUG')
 if DEBUG is None:
@@ -40,6 +42,16 @@ SQLITE_DIR = os.path.join(DATA_DIR,'robot_database.db')
 PROJECT_DIR =os.path.join(DATA_DIR,'projects')
 app.config ['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + SQLITE_DIR
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['BABEL_DEFAULT_LOCALE'] = 'el'
+# app.config['LANGUAGES'] =  {
+#     'en': 'English',
+#     'el': 'Greek',
+# }
+babel = Babel(app)
+
+
+
+
 CORS(app)
 
 # integrates Flask-SocketIO with the Flask application
@@ -50,6 +62,8 @@ socketio = SocketIO(app)
 db = SQLAlchemy(app)
 
 agent = Agent()
+
+
 
 class Projects(db.Model, SerializerMixin):
     project_id = db.Column('project_id', db.Integer, primary_key = True)
@@ -125,6 +139,7 @@ def error_handler(e):
 
 @app.route('/')
 def index():
+    
     stop_now()
     robot_name = get_robot_name()
     return render_template('home-page.html', robot_name=robot_name)
@@ -145,7 +160,8 @@ def blockly():
     robot_name = get_robot_name()
     get_sound_effects()
     scenes = get_scenes()
-    return render_template('blockly.html', project_id=id, robot_name=robot_name,scenes=scenes)           
+    locale = app.config['BABEL_DEFAULT_LOCALE']
+    return render_template('blockly.html', project_id=id, robot_name=robot_name,locale=locale,scenes=scenes)           
 
 # @app.route('/test_terminal')
 # def test_terminal():
@@ -551,8 +567,39 @@ def get_sound_effects():
             os.remove(os.path.join(DATA_DIR,'sound_effects.json'))
         with open(os.path.join(DATA_DIR,'sound_effects.json'), 'w') as out_file:
             json.dump(sounds_names, out_file)  
-             
+
+
+def shutdown_flask():
+    from win32api import GenerateConsoleCtrlEvent
+    CTRL_C_EVENT = 0
+    GenerateConsoleCtrlEvent(CTRL_C_EVENT, 0)
+
+def imed_exit():
+    try:
+        # try to exit gracefully
+       shutdown_flask()
+    except Exception as e:
+        # force quit
+        os._exit(0)
+
+
+@app.route("/shutdown")
+def shutdown():
+    imed_exit()
+    
+
+@socketio.on('systray_controls')
+def handle_systray_controls(message):
+
+    if message['data'] == 'exit':
+        imed_exit()
+    else:
+        print(message)
+
+
 if __name__ == '__main__':
     freeze_support()
+    systray = Thread(target=systray_agent,daemon=True)
+    systray.start()
     webbrowser.open_new("http://127.0.0.1:8081")
     socketio.run(app, host = '0.0.0.0',port=8081, debug=True)

@@ -5,10 +5,10 @@ block_cipher = None
 
 
 a = Analysis(
-    ['app.py'],
+    ['app.py','utils/systray_mode.py','robot/roboclass.py'],
     pathex=[],
     binaries=[],
-    datas=[('templates', 'templates'), ('utils', 'utils'), ('static', 'static'), ('robot', 'robot'), ('lib', 'lib')],
+    datas=[('templates', 'templates'), ('utils', 'utils'), ('static', 'static'),('translations', 'translations'), ('robot', 'robot'), ('lib', 'lib'),('app.ico','app.ico')],
     hiddenimports=[
         'engineio.async_drivers.threading',
                 'eventlet.hubs.epolls',
@@ -23,7 +23,8 @@ a = Analysis(
                 'dns.e164',
                 'dns.namedict',
                 'dns.tsigkeyring',
-                'robot.roboclass'
+                'robot.roboclass',
+                'pystray'
                  ],
     hookspath=[],
     hooksconfig={},
@@ -33,6 +34,7 @@ a = Analysis(
     win_private_assemblies=False,
     cipher=block_cipher,
     noarchive=False,
+    
 )
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 

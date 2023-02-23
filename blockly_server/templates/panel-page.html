@@ -74,14 +74,14 @@
     </div>
 
     <div id="panel-title-container">
-      <div id="panel-title-wrap">Administration page</div>
+      <div id="panel-title-wrap">{{ gettext('Administration page')}}</div>
     </div>
 
     <div id="blocks-container">
 
       <div id="blocks-title-wrap">
         <div id="blocks-title">
-          <strong>In the administration page you can configure several FOSSbot parameters, such as its name or the values of some of its blocks</strong>
+          <strong>{{ gettext('In the administration page you can configure several FOSSbot parameters, such as its name or the values of some of its blocks')}}</strong>
         </div>
       </div>
 
@@ -92,9 +92,9 @@
             <table class="table table-responsive">
               <thead>
                 <tr>
-                  <th scope="col">Parameter name</th>
-                  <th scope="col">Default value</th>
-                  <th scope="col">Value</th>
+                  <th scope="col">{{ gettext('Parameter name')}}</th>
+                  <th scope="col">{{ gettext('Default value')}}</th>
+                  <th scope="col">{{ gettext('Value')}}</th>
                 </tr>
               </thead>
               <tbody id="body-table-parameters">
@@ -107,14 +107,14 @@
 
       <div id="Blockly-Button-container">
         <div id="Blockly-Button-wrap">
-          <button onclick="open_audio_folder()"  class="save-panel-changes">Sounds Folder</button>
+          <button onclick="open_audio_folder()"  class="save-panel-changes">{{ gettext('Sounds Folder')}}</button>
         </div>
         <div id="Blockly-Button-wrap">
-          <button onclick="open_stage_folder()"  class="save-panel-changes">Stages Folder</button>
+          <button onclick="open_stage_folder()"  class="save-panel-changes">{{ gettext('Stages Folder')}}</button>
         </div>
 
         <div id="Blockly-Button-wrap">
-          <button onclick="saveSettings()" name="submit" type="submit" class="save-panel-changes">Save changes</button>
+          <button onclick="saveSettings()" name="submit" type="submit" class="save-panel-changes">{{ gettext('Save changes')}}</button>
         </div>
       </div>
 
