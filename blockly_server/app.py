@@ -5,7 +5,6 @@ from sqlalchemy_serializer import SerializerMixin
 from jinja2 import Environment, FileSystemLoader
 import subprocess
 import os,signal
-#import redis
 import time
 import psutil
 import textwrap
@@ -22,21 +21,39 @@ from robot.roboclass import Agent
 from multiprocessing import Process,freeze_support
 from threading import Thread
 from flask_babel import Babel
+from pygame import mixer
 
-from utils.systray_mode import systray_agent
 
-DEBUG = os.getenv('DEBUG')
-if DEBUG is None:
-    DEBUG = False
+
+DOCKER = False
+BASED_DIR = '/app' 
+APP_DIR = '/app' 
+if os.getenv('DOCKER') is not None:
+    if os.getenv('DOCKER') == 'True':
+        DOCKER = True
+
+if not DOCKER:
+    from utils.systray_mode import systray_agent
+    APP_DIR = os.path.abspath(os.path.dirname(__file__))
+    BASED_DIR = os.path.abspath(os.path.dirname(sys.executable)) 
+
+ROBOT_MODE  = 'coppelia'
+if os.getenv('ROBOT_MODE') is not None:
+    if os.getenv('ROBOT_MODE') == 'physical':
+        ROBOT_MODE = 'physical'
+
+# DEBUG = os.getenv('DEBUG')
+# if DEBUG is None:
+#     DEBUG = False
 
 SCRIPT_PROCCESS = None
 COPPELIA_PROCESS = None
 CURRENT_STAGE = None
 app = Flask(__name__)
-APP_DIR = os.path.abspath(os.path.dirname(__file__))
-BASED_DIR = os.path.abspath(os.path.dirname(sys.executable)) 
-#BASED_DIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 
+
+#BASED_DIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
+print()
 DATA_DIR =  os.path.join(BASED_DIR,'data')
 SQLITE_DIR = os.path.join(DATA_DIR,'robot_database.db')
 PROJECT_DIR =os.path.join(DATA_DIR,'projects')
@@ -63,6 +80,13 @@ db = SQLAlchemy(app)
 
 agent = Agent()
 
+
+
+def audio_prompt(audio_path):
+    mixer.init()
+    mixer.music.load(audio_path)
+    mixer.music.set_volume(0.7)
+    mixer.music.play()
 
 
 class Projects(db.Model, SerializerMixin):
@@ -135,7 +159,7 @@ def on_disconnect(data):
 
 @socketio.on_error()        # Handles the default namespace
 def error_handler(e):
-    print('Error - socket IO : ', e)
+    print('Error - socket  IO : ', e)
 
 @app.route('/')
 def index():
@@ -189,7 +213,7 @@ def blockly_get_sound_effects():
 def admin_panel():
     stop_now()
     robot_name = get_robot_name()
-    return render_template('panel-page.html', robot_name=robot_name)
+    return render_template('panel-page.html', robot_name=robot_name,docker = DOCKER, mode = ROBOT_MODE)
 
 @socketio.on('get_admin_panel_parameters')
 def handle_get_admin_panel_parameters():
@@ -321,11 +345,18 @@ def test_msgs(data):
     print('test')
     #socketio.emit('trm',  data)
 
+def relay_to_robot(packet):
+    socketio.emit('execute_fossbot',  packet)
+    socketio.emit('get_fossbot_status')
 
+@socketio.on('fossbot_status')
+def on_connect(data):
+    print("FossBot status: ", data)
 
 
 @socketio.on('execute_blockly')
 def handle_execute_blockly(data):
+    relay_to_robot(json.dumps(data))
     global SCRIPT_PROCCESS
     socketio.emit('execute_blockly_robot', {'status': '200', 'result': 'Code saved with success'})
     try:
@@ -590,7 +621,6 @@ def shutdown():
 
 @socketio.on('systray_controls')
 def handle_systray_controls(message):
-
     if message['data'] == 'exit':
         imed_exit()
     else:
@@ -599,7 +629,9 @@ def handle_systray_controls(message):
 
 if __name__ == '__main__':
     freeze_support()
-    systray = Thread(target=systray_agent,daemon=True)
-    systray.start()
-    webbrowser.open_new("http://127.0.0.1:8081")
+    #audio_prompt(os.path.join(APP_DIR,'audio_prompts/started.mp3'))
+    if not DOCKER:
+        systray = Thread(target=systray_agent,daemon=True)
+        systray.start()
+        webbrowser.open_new("http://127.0.0.1:8081")
     socketio.run(app, host = '0.0.0.0',port=8081, debug=True)

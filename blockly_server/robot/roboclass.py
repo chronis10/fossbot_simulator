@@ -11,6 +11,13 @@ import socketio
 
 
 
+
+DOCKER = False
+if os.getenv('DOCKER') is not None:
+    if os.getenv('DOCKER') == 'True':
+        DOCKER = True
+
+
 class Communication():
     def __init__(self, host='127.0.0.1', port= 8081 ,namespace='/test'):
         self.namespace = namespace
@@ -38,13 +45,13 @@ class Communication():
  
 class Agent():
     def __init__(self):
-       
-        APP_DIR = os.path.abspath(os.path.dirname(__file__))
-        BASED_DIR = os.path.abspath(os.path.dirname(sys.executable)) 
-        #DATA_DIR = os.path.dirname(os.path.dirname(APP_DIR))
+        #APP_DIR = os.path.abspath(os.path.dirname(__file__))
+        if DOCKER:
+            BASED_DIR = '/app'
+        else:
+            BASED_DIR = os.path.abspath(os.path.dirname(sys.executable)) 
         DATA_DIR =  os.path.join(BASED_DIR,'data')
         CONF_DIR = os.path.join(DATA_DIR,'admin_parameters.yaml')
-        #print(CONF_DIR)
         FILE_PARAM = load_parameters(path=CONF_DIR)
         SIM_IDS = configuration.SimRobotIds(**FILE_PARAM["simulator_ids"])
         

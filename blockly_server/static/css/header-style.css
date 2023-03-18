@@ -11,10 +11,14 @@ header {
   box-sizing: border-box;
   width: 100%;
   max-height: 90px;
+  
   background-size: cover;
   background-attachment: fixed;
   position: relative;
   overflow: hidden;
+  -webkit-box-shadow: 0 10px 6px -6px #777;
+     -moz-box-shadow: 0 10px 6px -6px #777;
+          box-shadow: 0 10px 6px -6px #777;
 }
 
 .header-wrap {
@@ -23,23 +27,43 @@ header {
   align-items: center;
   padding: 20px;
   box-sizing: border-box; 
-}
 
+
+}
+.whitebgr{
+  height: 100%;
+  background-image: url('/static/photos/white_curve.png');
+  background-repeat: no-repeat;
+  background-attachment: absolute;
+  background-size: 580px 100px; 
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  align-items: center;
+  padding: 20px;
+  
+}
 .hua-logo {
-  max-width: 60px;
-  max-height: 60px;
+  
+  max-width: 250px;
+  max-height: 200px;
   margin-right: 0.2rem;
+  float:left;
+  padding-left: 10px;
 }
 
 .ellak-logo {
-  max-width: 200px;
+  max-width: 250px;
+  float:left;
+  padding-left: 20px;
 }
 
 #header-robot-name {
   display: flex;
   flex-direction: row;
   justify-content: right;
-  margin-left: 70%;
+  margin-left: 90%;
   padding-top: 1%;
 }
 

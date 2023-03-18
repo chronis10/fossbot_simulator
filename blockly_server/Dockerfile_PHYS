@@ -1,0 +1,9 @@
+FROM python:3.8
+WORKDIR /app
+COPY requirements.txt requirements.txt
+COPY requirements_phys.txt requirements_phys.txt
+RUN pip3 install fossbot-lib
+RUN pip3 install -r requirements.txt
+RUN pip3 install -r requirements_phys
+COPY . .
+CMD [ "python3", "app.py"]

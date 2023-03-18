@@ -1,0 +1,12 @@
+services:
+  fossbotservice:
+    container_name: fossbot
+    image: fossbotsimulatordocker:latest
+    ports:
+      - "8081:8081"
+    environment:
+      - DOCKER=True
+    volumes:
+      - ./blockly_server/:/app
+      - ./data:/app/data
+      

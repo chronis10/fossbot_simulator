@@ -11,3 +11,6 @@ Flask_SocketIO
 fossbot-lib
 Flask-Babel
 simple-websocket
+pygame
+Pillow
+pystray
