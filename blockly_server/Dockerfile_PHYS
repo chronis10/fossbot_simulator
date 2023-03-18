@@ -1,9 +1,10 @@
 FROM python:3.8
 WORKDIR /app
+RUN apt update && apt install -y mpg123
 COPY requirements.txt requirements.txt
 COPY requirements_phys.txt requirements_phys.txt
-RUN pip3 install fossbot-lib-real
+RUN pip3 install 
 RUN pip3 install -r requirements.txt
-RUN pip3 install -r requirements_phys
+RUN pip3 install -r requirements_phys.txt
 COPY . .
 CMD [ "python3", "app.py"]

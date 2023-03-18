@@ -1,3 +1,4 @@
+fossbot-lib-real
 mpu6050-raspberrypi
 smbus
 rpi.gpio
