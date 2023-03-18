@@ -2,14 +2,21 @@ import time
 import sys
 import os
 import inspect
+import socketio
 from fossbot_lib.parameters_parser.parser import load_parameters
 from fossbot_lib.common.data_structures import configuration
 from fossbot_lib.common.interfaces import robot_interface
-from fossbot_lib.coppeliasim_robot.fossbot import FossBot #as SimuFossBot
-#from fossbot_lib.coppeliasim_robot import sim
-import socketio
+
+ROBOT_MODE  = 'coppelia'
+if os.getenv('ROBOT_MODE') is not None:
+    if os.getenv('ROBOT_MODE') == 'physical':
+        ROBOT_MODE = 'physical'
 
 
+if ROBOT_MODE == 'physical':
+    from fossbot_lib.real_robot.fossbot import FossBot
+else:
+    from fossbot_lib.coppeliasim_robot.fossbot import FossBot
 
 
 DOCKER = False
@@ -17,10 +24,6 @@ if os.getenv('DOCKER') is not None:
     if os.getenv('DOCKER') == 'True':
         DOCKER = True
 
-ROBOT_MODE  = 'coppelia'
-if os.getenv('ROBOT_MODE') is not None:
-    if os.getenv('ROBOT_MODE') == 'physical':
-        ROBOT_MODE = 'physical'
 
 class Communication():
     def __init__(self, host='127.0.0.1', port= 8081 ,namespace='/test'):
