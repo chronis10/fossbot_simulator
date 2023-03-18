@@ -5,8 +5,8 @@ import inspect
 from fossbot_lib.parameters_parser.parser import load_parameters
 from fossbot_lib.common.data_structures import configuration
 from fossbot_lib.common.interfaces import robot_interface
-from fossbot_lib.coppeliasim_robot.fossbot import FossBot as SimuFossBot
-from fossbot_lib.coppeliasim_robot import sim
+from fossbot_lib.coppeliasim_robot.fossbot import FossBot #as SimuFossBot
+#from fossbot_lib.coppeliasim_robot import sim
 import socketio
 
 
@@ -17,6 +17,10 @@ if os.getenv('DOCKER') is not None:
     if os.getenv('DOCKER') == 'True':
         DOCKER = True
 
+ROBOT_MODE  = 'coppelia'
+if os.getenv('ROBOT_MODE') is not None:
+    if os.getenv('ROBOT_MODE') == 'physical':
+        ROBOT_MODE = 'physical'
 
 class Communication():
     def __init__(self, host='127.0.0.1', port= 8081 ,namespace='/test'):
@@ -50,25 +54,37 @@ class Agent():
             BASED_DIR = '/app'
         else:
             BASED_DIR = os.path.abspath(os.path.dirname(sys.executable)) 
+
         DATA_DIR =  os.path.join(BASED_DIR,'data')
         CONF_DIR = os.path.join(DATA_DIR,'admin_parameters.yaml')
         FILE_PARAM = load_parameters(path=CONF_DIR)
-        SIM_IDS = configuration.SimRobotIds(**FILE_PARAM["simulator_ids"])
-        
-        self.parameters = configuration.SimRobotParameters(
-        sensor_distance=configuration.SensorDistance(**FILE_PARAM["sensor_distance"]),
-        motor_left_speed=configuration.MotorLeftSpeed(**FILE_PARAM["motor_left"]),
-        motor_right_speed=configuration.MotorRightSpeed(**FILE_PARAM["motor_right"]),
-        default_step=configuration.DefaultStep(**FILE_PARAM["step"]),
-        light_sensor=configuration.LightSensor(**FILE_PARAM["light_sensor"]),
-        line_sensor_left=configuration.LineSensorLeft(**FILE_PARAM["line_sensor_left"]),
-        line_sensor_center=configuration.LineSensorCenter(**FILE_PARAM["line_sensor_center"]),
-        line_sensor_right=configuration.LineSensorRight(**FILE_PARAM["line_sensor_right"]),
-        rotate_90=configuration.Rotate90(**FILE_PARAM["rotate_90"]),
-        simulation=SIM_IDS)
+        if ROBOT_MODE=='coppelia':  
+            SIM_IDS = configuration.SimRobotIds(**FILE_PARAM["simulator_ids"])
+            self.parameters = configuration.SimRobotParameters(
+            sensor_distance=configuration.SensorDistance(**FILE_PARAM["sensor_distance"]),
+            motor_left_speed=configuration.MotorLeftSpeed(**FILE_PARAM["motor_left"]),
+            motor_right_speed=configuration.MotorRightSpeed(**FILE_PARAM["motor_right"]),
+            default_step=configuration.DefaultStep(**FILE_PARAM["step"]),
+            light_sensor=configuration.LightSensor(**FILE_PARAM["light_sensor"]),
+            line_sensor_left=configuration.LineSensorLeft(**FILE_PARAM["line_sensor_left"]),
+            line_sensor_center=configuration.LineSensorCenter(**FILE_PARAM["line_sensor_center"]),
+            line_sensor_right=configuration.LineSensorRight(**FILE_PARAM["line_sensor_right"]),
+            rotate_90=configuration.Rotate90(**FILE_PARAM["rotate_90"]),
+            simulation=SIM_IDS)
+        else:
+            self.parameters = configuration.RobotParameters(
+            sensor_distance=configuration.SensorDistance(**FILE_PARAM["sensor_distance"]),
+            motor_left_speed=configuration.MotorLeftSpeed(**FILE_PARAM["motor_left"]),
+            motor_right_speed=configuration.MotorRightSpeed(**FILE_PARAM["motor_right"]),
+            default_step=configuration.DefaultStep(**FILE_PARAM["step"]),
+            light_sensor=configuration.LightSensor(**FILE_PARAM["light_sensor"]),
+            line_sensor_left=configuration.LineSensorLeft(**FILE_PARAM["line_sensor_left"]),
+            line_sensor_center=configuration.LineSensorCenter(**FILE_PARAM["line_sensor_center"]),
+            line_sensor_right=configuration.LineSensorRight(**FILE_PARAM["line_sensor_right"]),
+            rotate_90=configuration.Rotate90(**FILE_PARAM["rotate_90"]))
         
     def execute(self,code):
-        robot = SimuFossBot(parameters=self.parameters)
+        robot = FossBot(parameters=self.parameters)
         coms = Communication()
         transmit = coms.transmit
         exec(code)
@@ -77,9 +93,6 @@ class Agent():
     
     def stop(self):
         pass
-        # robot = SimuFossBot(parameters=self.parameters)
-        # id = robot.client_id
-        # sim.simxStopSimulation(id,sim.simx_opmode_blocking)
      
 
 if __name__ == '__main__':
