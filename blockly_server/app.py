@@ -21,9 +21,6 @@ from robot.roboclass import Agent
 from multiprocessing import Process,freeze_support
 from threading import Thread
 from flask_babel import Babel
-from pygame import mixer
-
-
 
 DOCKER = False
 BASED_DIR = '/app' 
@@ -41,6 +38,10 @@ ROBOT_MODE  = 'coppelia'
 if os.getenv('ROBOT_MODE') is not None:
     if os.getenv('ROBOT_MODE') == 'physical':
         ROBOT_MODE = 'physical'
+
+if ROBOT_MODE == 'physical' :
+    from pygame import mixer
+
 
 # DEBUG = os.getenv('DEBUG')
 # if DEBUG is None:
