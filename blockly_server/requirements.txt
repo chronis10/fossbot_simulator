@@ -5,10 +5,8 @@ SQLAlchemy
 Flask-SQLAlchemy
 SQLAlchemy-serializer
 Flask-Cors
-psutil
 eventlet
 Flask_SocketIO
 fossbot-lib
 Flask-Babel
 simple-websocket
-Pillow

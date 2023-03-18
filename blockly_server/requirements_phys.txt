@@ -1,6 +1,5 @@
 fossbot-lib-real
 mpu6050-raspberrypi
 smbus
-rpi.gpio
 Adafruit-GPIO
 Adafruit-MCP3008

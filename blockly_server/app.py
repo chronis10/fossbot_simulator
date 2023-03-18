@@ -6,7 +6,6 @@ from jinja2 import Environment, FileSystemLoader
 import subprocess
 import os,signal
 import time
-import psutil
 import textwrap
 import shutil
 import yaml
@@ -89,7 +88,6 @@ def audio_prompt(audio_path):
     mixer.music.set_volume(0.7)
     mixer.music.play()
 
-
 class Projects(db.Model, SerializerMixin):
     project_id = db.Column('project_id', db.Integer, primary_key = True)
     title = db.Column(db.String(100))
@@ -97,7 +95,6 @@ class Projects(db.Model, SerializerMixin):
     def __init__(self, title,info):
         self.title = title
         self.info = info
-
 
 def execute_blocks(code):
     #print('hello')
