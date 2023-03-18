@@ -7,6 +7,7 @@ services:
       - "8081:8081"
     environment:
       - DOCKER=True
+      - ROBOT_MODE=physical
     volumes:
       - ./blockly_server/:/app
       - ./data:/app/data
