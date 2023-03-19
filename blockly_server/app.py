@@ -2,11 +2,7 @@ from flask import Flask,jsonify,request,Response, render_template,redirect, url_
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from sqlalchemy_serializer import SerializerMixin
-from jinja2 import Environment, FileSystemLoader
-import subprocess
-import os,signal
-import time
-import textwrap
+import os
 import shutil
 import yaml
 from flask_socketio import SocketIO, emit
@@ -15,7 +11,6 @@ import json
 import sys
 import webbrowser
 from xml.dom import minidom
-import io
 from robot.roboclass import Agent
 from multiprocessing import Process,freeze_support
 from threading import Thread
@@ -29,7 +24,7 @@ if os.getenv('DOCKER') is not None:
         DOCKER = True
 
 if not DOCKER:
-    from utils.systray_mode import systray_agent
+    #from utils.systray_mode import systray_agent
     APP_DIR = os.path.abspath(os.path.dirname(__file__))
     BASED_DIR = os.path.abspath(os.path.dirname(sys.executable)) 
 
@@ -38,55 +33,35 @@ if os.getenv('ROBOT_MODE') is not None:
     if os.getenv('ROBOT_MODE') == 'physical':
         ROBOT_MODE = 'physical'
 
-if ROBOT_MODE != 'physical' :
-    from pygame import mixer
+DEBUG = False
+if os.getenv('DEBUG') is not None:
+    if os.getenv('DEBUG') == 'True':
+        DEBUG = True
 
 
-# DEBUG = os.getenv('DEBUG')
-# if DEBUG is None:
-#     DEBUG = False
+if os.getenv('LOCALE') is None:
+    LOCALE = 'el'
+else:
+    LOCALE = os.getenv('LOCALE')
 
 SCRIPT_PROCCESS = None
 COPPELIA_PROCESS = None
 CURRENT_STAGE = None
 app = Flask(__name__)
 
-
-#BASED_DIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
-print()
 DATA_DIR =  os.path.join(BASED_DIR,'data')
 SQLITE_DIR = os.path.join(DATA_DIR,'robot_database.db')
 PROJECT_DIR =os.path.join(DATA_DIR,'projects')
 app.config ['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + SQLITE_DIR
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['BABEL_DEFAULT_LOCALE'] = 'el'
-# app.config['LANGUAGES'] =  {
-#     'en': 'English',
-#     'el': 'Greek',
-# }
+app.config['BABEL_DEFAULT_LOCALE'] = LOCALE
+
 babel = Babel(app)
 
-
-
-
 CORS(app)
-
-# integrates Flask-SocketIO with the Flask application
 socketio = SocketIO(app)
-
-#r = redis.Redis(host='redis_server')
-
 db = SQLAlchemy(app)
-
 agent = Agent()
-
-
-
-def audio_prompt(audio_path):
-    mixer.init()
-    mixer.music.load(audio_path)
-    mixer.music.set_volume(0.7)
-    mixer.music.play()
 
 class Projects(db.Model, SerializerMixin):
     project_id = db.Column('project_id', db.Integer, primary_key = True)
@@ -97,55 +72,26 @@ class Projects(db.Model, SerializerMixin):
         self.info = info
 
 def execute_blocks(code):
-    #print('hello')
     agent.execute(code)
-
-def stop_coppelia():
-    agent.stop()
-
-# def open_coppelia():
-#     start_coppelia()
-
-def start_coppelia(stage):
-    
-    try:
-        agent.stop()
-    except:
-        pass
-    # stage_path = f'"{stage}"'
-    # coppelia_path = '"C:\\Program Files\\CoppeliaRobotics\\CoppeliaSimEdu\\coppeliaSim.exe"'
-    # os.system(f'cmd /k  "{coppelia_path} -gGUIITEMS_0 -s -q {stage_path}" ')
-
     
 @app.before_first_request
 def before_first_request():
-
+    
     if not os.path.exists(DATA_DIR):
         os.mkdir(DATA_DIR)
         os.mkdir(PROJECT_DIR)
     elif not os.path.exists(PROJECT_DIR):
-        os.mkdir(PROJECT_DIR)    
-    get_sound_effects()
-    try:
-        db.session.query(Projects)
-    except:
-        db.create_all()
+        os.mkdir(PROJECT_DIR)
+    if ROBOT_MODE  == 'coppelia': 
+        if not os.path.exists(os.path.join(DATA_DIR,'Coppelia_Scenes')):
+            os.mkdir(os.path.join(DATA_DIR,'Coppelia_Scenes'))
+    if not os.path.exists(os.path.join(DATA_DIR,'sound_effects')):
+        shutil.copytree(os.path.join(APP_DIR,'utils/sound_effects'),os.path.join(DATA_DIR,'sound_effects'))
 
-        if len(db.session.query(Projects)) == 0:
-            create_kindergarten_files()
+    db.create_all()    
+    get_sound_effects()
     if not os.path.exists(os.path.join(DATA_DIR,'admin_parameters.yaml')):
         shutil.copy(os.path.join(APP_DIR,'utils/code_templates/admin_parameters.yaml'),os.path.join(DATA_DIR,'admin_parameters.yaml'))
-
-def create_kindergarten_files():
-    title = "Kindergarten Project"
-    info = "Default file for Kindergarten"
-    project = Projects(title,info)
-    db.session.add(project) 
-    db.session.commit()
-    db.session.refresh(project)
-    os.mkdir(os.path.join(PROJECT_DIR,f'{project.project_id}'))
-    shutil.copy(os.path.join(APP_DIR,'utils/code_templates/template.xml'),os.path.join(PROJECT_DIR,f'{project.project_id}/{project.project_id}.xml'))
-
 
 @socketio.on('connection')
 def on_connect(data):
@@ -155,7 +101,7 @@ def on_connect(data):
 def on_disconnect(data):
     print("Socket disconnected!!, data received:", data)
 
-@socketio.on_error()        # Handles the default namespace
+@socketio.on_error()  
 def error_handler(e):
     print('Error - socket  IO : ', e)
 
@@ -185,18 +131,12 @@ def blockly():
     locale = app.config['BABEL_DEFAULT_LOCALE']
     return render_template('blockly.html', project_id=id, robot_name=robot_name,locale=locale,scenes=scenes)           
 
-# @app.route('/test_terminal')
-# def test_terminal():
-#     socketio.emit('trm',  {'status': 'dokimh'}) 
-#     return { 'status': '200'}
-
 @app.route('/kindergarten')
 def kindergarten():
     stop_now()
     robot_name = get_robot_name()
     scenes = get_scenes()
-    # get_sound_effects()
-    return render_template('blockly_simple.html', project_id=1, robot_name=robot_name,scenes=scenes)  
+    return render_template('blockly_simple.html', project_id=-1, robot_name=robot_name,scenes=scenes)  
 
 @socketio.on('get_sound_effects')
 def blockly_get_sound_effects():
@@ -284,12 +224,6 @@ def handle_edit_project(project_id):
         print(e)
         emit('edit_project', {'status':'error'})
 
-@socketio.on('execute_script')
-def handle_execute_script(data):
-    id = data['project_id']
-    result = execute_code(id)
-    emit('execute_script_result', result)
-
 @socketio.on('script_status')
 def handle_script_status():
     global SCRIPT_PROCCESS
@@ -308,40 +242,10 @@ def handle_stop_script():
     result = stop_now()
     emit('stop_script', result)
 
-@socketio.on('manual_control_command')
-def handle_manual_control_command(data):
-   try:
-     command = data['command']
-     print(f'flask {command}')
-     r.set('command',bytes(command, "utf8"))
-     r.expire('command', 2)
-     emit('manual_control_command_result',  {'status': '200', 'command received and executed': command})
-   except Exception as e:
-     print(e)
-     emit('manual_control_command_result',  {'status': 'error', 'e': e})
-
-@app.route('/manual_control')
-def manual_control():
-    stop_script()
-    execute_code(None,manual_control=True)
-    robot_name = get_robot_name()
-    return render_template('control.html', robot_name=robot_name)
-
-@socketio.on('manual_control')
-def handle_manual_control():
-   stop_script()
-   execute_code(None,manual_control=True)
-   emit('manual_control',  {'status': 'ok'})
-
 @socketio.on('terminal_msgs')
 def handle_terminal_msgs(data):
     print(data)
     socketio.emit('trm',  data)
-
-@socketio.on('testmsg')
-def test_msgs(data):
-    print('test')
-    #socketio.emit('trm',  data)
 
 def relay_to_robot(packet):
     socketio.emit('execute_fossbot',  packet)
@@ -350,7 +254,6 @@ def relay_to_robot(packet):
 @socketio.on('fossbot_status')
 def on_connect(data):
     print("FossBot status: ", data)
-
 
 @socketio.on('execute_blockly')
 def handle_execute_blockly(data):
@@ -363,32 +266,14 @@ def handle_execute_blockly(data):
         print(code)
         try:
             stop_script()
-            #SCRIPT_PROCCESS = threading.Thread(target=execute_blocks, args=(code,))
             SCRIPT_PROCCESS = Process(target=execute_blocks, args=(code,),daemon=True)
             SCRIPT_PROCCESS.start()
         except Exception as e:
             print(e)
-        #print(SCRIPT_PROCCESS)
-        #generate_py(code,id)
-        
-        #result = execute_code(id)  
-        #emit('execute_blockly_result', result)
         emit('execute_blockly_result', {'status': '200'})
     except Exception as e:
         print(e)
         emit('execute_blockly_result',  {'status': 'error when creating .py file or when running the .py file'})
-
-
-
-@socketio.on('open_map')
-def open_map(data):
-    global CURRENT_STAGE,COPPELIA_PROCESS
-    files = glob.glob(os.path.join(DATA_DIR,f'Coppelia_Scenes/{data}')) 
-    if ".ttt" in files[0]:
-        CURRENT_STAGE = files[0]
-        reset_coppelia()
-        emit('execute_blockly_result', {'status': '200'})
-
 
 @socketio.on('open_audio_folder')
 def open_audio_folder():
@@ -398,17 +283,6 @@ def open_audio_folder():
 @socketio.on('open_stage_folder')
 def open_map_folder():
     os.startfile(os.path.realpath(os.path.join(DATA_DIR,'Coppelia_Scenes')))
-
-@socketio.on('reset_stage')
-def reset_coppelia():
-    global COPPELIA_PROCESS,CURRENT_STAGE
-    if COPPELIA_PROCESS is not None:
-        COPPELIA_PROCESS.terminate()
-    COPPELIA_PROCESS = Process(target=start_coppelia,args=(CURRENT_STAGE,),daemon=False)
-    COPPELIA_PROCESS.start()
-    #emit('execute_blockly_result', {'status': '200'})
-
-
 
 @socketio.on('send_xml')
 def handle_send_xml(data):
@@ -424,21 +298,15 @@ def handle_send_xml(data):
 def handle_save_xml(data):
     try: 
         id = data['id']
-        code = data['code']
-        
-        
+        code = data['code']        
         project = Projects.query.get(id)        
-        
-        
         code = code.replace('</xml>','')
         extra_info = ''.join(['  <project>\n', f'    <title>{project.title}</title>\n', f'    <description>{project.info}</description>\n', '  </project>\n', '</xml>'])
         code += extra_info
-        
         with open(os.path.join(PROJECT_DIR,f'{id}/{id}.xml'), "w", encoding="utf8") as fh:
             fh.write(code)
         emit('save_xml_result', {'status': '200', 'result': 'Code saved with success'})
     except Exception as e:
-       
         emit('save_xml_result',  {'status': 'error occured', 'result': 'Code was not saved'})
 
 @app.route('/export_project/<int:id>')
@@ -447,19 +315,14 @@ def export_project(id):
     path = os.path.join(PROJECT_DIR,f'{id}/{id}.xml')
     return send_file(path, as_attachment=True)
 
-
 @app.route('/upload_project', methods=[ 'POST'])
 def upload_project():    
     if request.method == 'POST':
         if 'file' not in request.files:
-            
             return redirect("/")
         file = request.files['file']
         if file.filename == '':
-            
             return redirect("/")
-        #in_memory_file = io.BytesIO()
-        #file.save(in_memory_file)
         data = file.read().decode('utf-8')
         docs = minidom.parseString(data)
         pjs = docs.getElementsByTagName('project')[0]
@@ -472,42 +335,13 @@ def upload_project():
         os.mkdir(os.path.join(PROJECT_DIR,f'{project.project_id}'))
         with open(os.path.join(PROJECT_DIR,f'{project.project_id}/{project.project_id}.xml'), "w", encoding="utf8") as fh:
             fh.write(data)
-       
     return redirect("/")
-    # print(id)
-    # path = os.path.join(PROJECT_DIR,f'{id}/{id}.xml')
-    # return send_file(path, as_attachment=True)
+
 
 def get_all_projects():
     projects = Projects.query.all()
     projects_list = [pr.to_dict() for pr in projects]
     return projects_list
-
-
-def generate_py(code,id):
-    env = Environment(loader=FileSystemLoader(os.path.join(APP_DIR,'utils/code_templates')))
-    template = env.get_template('template_code.py')
-    code = textwrap.indent(text=code, prefix='  ', predicate=lambda line: True)
-    output = template.render(code = code)
-    with open(os.path.join(PROJECT_DIR,f'{id}/{id}.py'), "w" , encoding=('utf-8')) as fh:
-        fh.write(output)
-
-def execute_code(id,manual_control=False):
-    global SCRIPT_PROCCESS
-    my_env = os.environ.copy()
-    if not manual_control:
-        if not os.path.exists(os.path.join(PROJECT_DIR,f'{id}/{id}.py')):
-            return {'status': 'file not found'}    
-        if SCRIPT_PROCCESS is None or SCRIPT_PROCCESS.poll() is not None:        
-            SCRIPT_PROCCESS = subprocess.Popen(['python', os.path.join(PROJECT_DIR,f'{id}/{id}.py')],env= my_env)
-            return {'status': 'started'}
-        else:
-            return {'status': 'still running'}
-    else:
-        stop_now()
-        SCRIPT_PROCCESS = subprocess.Popen(['python', os.path.join(APP_DIR,'utils/manual_control.py')])
-        return {'status': 'started'}
-
 
 def stop_now():
     global SCRIPT_PROCCESS
@@ -522,38 +356,6 @@ def stop_now():
         except Exception as e:
             print(e)
             return{'status': 'nothing running'}
-    # if SCRIPT_PROCCESS is not None:   
-    #     if sys.platform == 'win32':
-    #         os.system("taskkill /F /pid "+str(SCRIPT_PROCCESS.pid))
-    #     else:
-    #         os.kill(SCRIPT_PROCCESS.pid, signal.SIGINT)
-
-    #     SCRIPT_PROCCESS.terminate()
-    #     print(SCRIPT_PROCCESS.poll())
-    #     SCRIPT_PROCCESS = None
-    #     print( 'stopped')
-    #     return {'status': 'stopped'}
-    # else:
-    #     print( 'nothing running')
-    #     return{'status': 'nothing running'}
-
-
-# def stop_now():
-#     global SCRIPT_PROCCESS
-#     if SCRIPT_PROCCESS is not None:   
-#         if sys.platform == 'win32':
-#             os.system("taskkill /F /pid "+str(SCRIPT_PROCCESS.pid))
-#         else:
-#             os.kill(SCRIPT_PROCCESS.pid, signal.SIGINT)
-
-#         SCRIPT_PROCCESS.terminate()
-#         print(SCRIPT_PROCCESS.poll())
-#         SCRIPT_PROCCESS = None
-#         print( 'stopped')
-#         return {'status': 'stopped'}
-#     else:
-#         print( 'nothing running')
-#         return{'status': 'nothing running'}
         
 def load_parameters():
     with open(os.path.join(DATA_DIR,'admin_parameters.yaml'), encoding=('utf-8')) as file:
@@ -583,8 +385,6 @@ def get_sound_effects():
         mp3_sounds_list = glob.glob(os.path.join(DATA_DIR,'sound_effects/*.mp3'))
         sounds_names = []
         for sound in mp3_sounds_list: 
-            # split_list = sound.split("/")
-            # audio_name = split_list[2] 
             split_list = os.path.split(sound)
             audio_name = split_list[-1]
             audio_name_list = audio_name.split(".")
@@ -605,17 +405,13 @@ def shutdown_flask():
 
 def imed_exit():
     try:
-        # try to exit gracefully
        shutdown_flask()
     except Exception as e:
-        # force quit
         os._exit(0)
-
 
 @app.route("/shutdown")
 def shutdown():
     imed_exit()
-    
 
 @socketio.on('systray_controls')
 def handle_systray_controls(message):
@@ -627,9 +423,16 @@ def handle_systray_controls(message):
 
 if __name__ == '__main__':
     freeze_support()
-    #audio_prompt(os.path.join(APP_DIR,'audio_prompts/started.mp3'))
+
+    # ----- Uncomment for pyinstaller  -------
+    # DOCKER = False
+    # DEBUG = False
+    # ROBOT_MODE  = 'coppelia'
+    # ----------------------------------------
+
     if not DOCKER:
-        systray = Thread(target=systray_agent,daemon=True)
-        systray.start()
+        # systray = Thread(target=systray_agent,daemon=True)
+        # systray.start()
         webbrowser.open_new("http://127.0.0.1:8081")
-    socketio.run(app, host = '0.0.0.0',port=8081, debug=True)
+    
+    socketio.run(app, host = '0.0.0.0',port=8081, debug=DEBUG)

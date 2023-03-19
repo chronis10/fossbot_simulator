@@ -1,7 +1,7 @@
 //attributes for adding a new project 
 let new_project_title;
 let new_project_description;
-let last_table_size = 1;
+let last_table_size = 0;
 
 function loadProjects(data) {
     console.log('load projects');
@@ -20,7 +20,7 @@ function loadProjects(data) {
      
         
         if (last_table_size !=  projects_array.length){
-            for (var i = 1; i < projects_array.length; i++) {
+            for (var i = 0; i < projects_array.length; i++) {
                 const project = projects_array[i];
 
                 //add every time the the project name as the last row

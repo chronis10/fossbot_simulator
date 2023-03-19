@@ -8,7 +8,7 @@ a = Analysis(
     ['app.py','utils/systray_mode.py','robot/roboclass.py'],
     pathex=[],
     binaries=[],
-    datas=[('templates', 'templates'), ('utils', 'utils'), ('static', 'static'),('translations', 'translations'), ('robot', 'robot'), ('lib', 'lib'),('app.ico','app.ico')],
+    datas=[('templates', 'templates'), ('utils', 'utils'), ('static', 'static'),('translations', 'translations'), ('robot', 'robot'), ('../lib', 'lib'),('app.ico','app.ico')],
     hiddenimports=[
         'engineio.async_drivers.threading',
                 'eventlet.hubs.epolls',

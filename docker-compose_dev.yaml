@@ -10,7 +10,8 @@ services:
       - DOCKER=True
       - ROBOT_MODE=physical
       - LOCALE=en
-      - DEBUG=False
+      - DEBUG=True
     volumes:
+      - ./blockly_server/:/app
       - ./data:/app/data
       

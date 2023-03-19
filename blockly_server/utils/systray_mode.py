@@ -4,7 +4,7 @@ import os
 import socketio
 import time
 import webbrowser
-
+import sys
 
 sio = socketio.Client()
 
@@ -29,7 +29,7 @@ def create_image(width, height, color1, color2):
 def create_systray_app():   
 
     icon = pystray.Icon('FossBot',
-                        icon=Image.open(os.path.join(os.path.dirname(__file__), "..", "app.ico")),
+                        icon=Image.open(os.path.join(os.path.dirname(__file__),'..' , "app.ico")),
                         menu=pystray.Menu(
                         pystray.MenuItem("Open FossBot", after_click),
                         # pystray.MenuItem("GeeksforGeeks Youtube", after_click),

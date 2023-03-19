@@ -51,6 +51,25 @@ async function loadProject() {
 // }
 
 
+async function runCode_simple(id) {
+  let blockly_code = Blockly.Python.workspaceToCode(Blockly.mainWorkspace);
+
+  if (blockly_code == "") {
+    console.log("no code to run");
+
+    //show modal
+    showModalError("No Blocks detected!")
+    return;
+  }
+
+  const result = await sendCode(id, blockly_code)
+  const status = result.status
+  if (status == 'started') {
+    showModalSuccess("The program running successfully!");
+  }
+}
+
+
 //send the code from thw workspace to be run in the robot 
 async function runCode(id) {
   let blockly_code = Blockly.Python.workspaceToCode(Blockly.mainWorkspace);

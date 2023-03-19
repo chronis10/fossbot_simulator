@@ -16,7 +16,7 @@ function loadSettings(data) {
         console.log('parameter:', parameter_key);
         
 
-        if(parameter['name'] == "Όνομα ρομπότ") {
+        if(parameter_key == "robot_name") {
             document.getElementById("body-table-parameters").insertRow(-1).innerHTML =
             '<tr>' +
             '<td>' + parameter['name'] + '</td>' +
