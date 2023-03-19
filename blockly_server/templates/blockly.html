@@ -47,7 +47,7 @@
 
 <body onload="loadProject()" onclick="closeModalSuccessOrErrorwhenClickAnywhere()">
   {% include 'header.html' %}
-
+</br>
   <div id="main-container">
  
     <!-- <div id="back-import-export-buttons-container">
@@ -67,7 +67,7 @@
     </div> -->
     <div class="row custom_row">
       <div class="col-9" >
-        <div id="blocklyDiv"></div>
+        <div class="drop_shadow" id="blocklyDiv"></div>
       </div>
      
       
@@ -95,7 +95,7 @@
         <!-- <div id="button_fa_wrap" >
         <button class="btn btn-success" onClick="window.open('http://127.0.0.1:23020');">{{ gettext('Window')}}</button>
       </div> -->
-        <div id="terminal_div">
+        <div class="drop_shadow" id="terminal_div">
           <div id="terminal_scrollable-content">
           <p>FossBot Terminal...</p>
         </div>

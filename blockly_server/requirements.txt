@@ -7,6 +7,7 @@ SQLAlchemy-serializer
 Flask-Cors
 eventlet
 Flask_SocketIO
-fossbot-lib
 Flask-Babel
 simple-websocket
+requests
+websocket-client

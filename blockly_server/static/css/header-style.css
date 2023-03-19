@@ -16,9 +16,7 @@ header {
   background-attachment: fixed;
   position: relative;
   overflow: hidden;
-  -webkit-box-shadow: 0 10px 6px -6px #777;
-     -moz-box-shadow: 0 10px 6px -6px #777;
-          box-shadow: 0 10px 6px -6px #777;
+
 }
 
 .header-wrap {
@@ -35,7 +33,7 @@ header {
   background-image: url('/static/photos/white_curve.png');
   background-repeat: no-repeat;
   background-attachment: absolute;
-  background-size: 580px 100px; 
+  background-size: 500px 100px; 
   position: absolute;
   top: 0;
   left: 0;
@@ -47,7 +45,7 @@ header {
 .hua-logo {
   
   max-width: 250px;
-  max-height: 200px;
+  max-height: 50px;
   margin-right: 0.2rem;
   float:left;
   padding-left: 10px;
@@ -55,8 +53,9 @@ header {
 
 .ellak-logo {
   max-width: 250px;
+  max-height: 50px;
   float:left;
-  padding-left: 20px;
+  padding-left: 10px;
 }
 
 #header-robot-name {

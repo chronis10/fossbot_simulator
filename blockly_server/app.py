@@ -38,7 +38,7 @@ if os.getenv('ROBOT_MODE') is not None:
     if os.getenv('ROBOT_MODE') == 'physical':
         ROBOT_MODE = 'physical'
 
-if ROBOT_MODE == 'physical' :
+if ROBOT_MODE != 'physical' :
     from pygame import mixer
 
 

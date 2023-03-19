@@ -1,3 +1,4 @@
+RPi.GPIO==0.7.0
 fossbot-lib-real
 mpu6050-raspberrypi
 smbus

@@ -43,11 +43,11 @@
 
 <body onload="loadProject()" onclick="closeModalSuccessOrErrorwhenClickAnywhere()">
   {% include 'header.html' %}
-
+</br>
   <div id="main-container">
     <div class="row custom_row">
-      <div class="col-10" >
-        <div id="blocklyDiv"></div>
+      <div class="col-10 " >
+        <div class="drop_shadow" id="blocklyDiv"></div>
       </div>
      
       
@@ -78,12 +78,12 @@
 
         <div id="button__controls_row">
         <div id="button_fa_wrap_controls">
-          <a onclick="javascript:runCode(1)" href="#"  style="color: rgb(56, 199, 0); text-decoration: none;">
+          <a  onclick="javascript:runCode(1)" href="#"  style="color: rgb(56, 199, 0); text-decoration: none;">
           <i class="fa-solid fa-circle-play"></i>
           </a>
         </div>
         <div id="button_fa_wrap_controls">
-          <a onclick="stop_script()" href="#"  style="color: rgb(199, 30, 0); text-decoration: none;">
+          <a  onclick="stop_script()" href="#"  style="color: rgb(199, 30, 0); text-decoration: none;">
           <i class="fa-solid fa-circle-stop"></i>
           </a>
         </div>
@@ -134,6 +134,17 @@
 
 
 
+  <!-- <div>
+  <a onclick="javascript:runCode(1)" href="#" class="float_btn_play">
+    <i class="fa-solid fa-play float_btn_play_icon"></i>
+  </a>
+</div>
+
+<div>
+  <a onclick="stop_script()" href="#" class="float_btn_stop">
+    <i class="fa-solid fa-stop float_btn_stop_icon"></i>
+  </a>
+</div> -->
 
   <xml  id="toolbox" style="display: none">
     <block type="move_forward_default"></block>

@@ -24,6 +24,14 @@ if os.getenv('DOCKER') is not None:
     if os.getenv('DOCKER') == 'True':
         DOCKER = True
 
+#APP_DIR = os.path.abspath(os.path.dirname(__file__))
+if DOCKER:
+    BASED_DIR = '/app'
+else:
+    BASED_DIR = os.path.abspath(os.path.dirname(sys.executable)) 
+
+DATA_DIR =  os.path.join(BASED_DIR,'data')
+CONF_DIR = os.path.join(DATA_DIR,'admin_parameters.yaml')
 
 class Communication():
     def __init__(self, host='127.0.0.1', port= 8081 ,namespace='/test'):
@@ -50,44 +58,39 @@ class Communication():
         print("I'm disconnected!")
 
  
-class Agent():
-    def __init__(self):
-        #APP_DIR = os.path.abspath(os.path.dirname(__file__))
-        if DOCKER:
-            BASED_DIR = '/app'
-        else:
-            BASED_DIR = os.path.abspath(os.path.dirname(sys.executable)) 
-
-        DATA_DIR =  os.path.join(BASED_DIR,'data')
-        CONF_DIR = os.path.join(DATA_DIR,'admin_parameters.yaml')
-        FILE_PARAM = load_parameters(path=CONF_DIR)
+class Agent():       
+    def load_parameters(self):
+        file_params = load_parameters(path=CONF_DIR)
         if ROBOT_MODE=='coppelia':  
-            SIM_IDS = configuration.SimRobotIds(**FILE_PARAM["simulator_ids"])
-            self.parameters = configuration.SimRobotParameters(
-            sensor_distance=configuration.SensorDistance(**FILE_PARAM["sensor_distance"]),
-            motor_left_speed=configuration.MotorLeftSpeed(**FILE_PARAM["motor_left"]),
-            motor_right_speed=configuration.MotorRightSpeed(**FILE_PARAM["motor_right"]),
-            default_step=configuration.DefaultStep(**FILE_PARAM["step"]),
-            light_sensor=configuration.LightSensor(**FILE_PARAM["light_sensor"]),
-            line_sensor_left=configuration.LineSensorLeft(**FILE_PARAM["line_sensor_left"]),
-            line_sensor_center=configuration.LineSensorCenter(**FILE_PARAM["line_sensor_center"]),
-            line_sensor_right=configuration.LineSensorRight(**FILE_PARAM["line_sensor_right"]),
-            rotate_90=configuration.Rotate90(**FILE_PARAM["rotate_90"]),
-            simulation=SIM_IDS)
+            simulation_ids = configuration.SimRobotIds(**file_params["simulator_ids"])
+            parameters = configuration.SimRobotParameters(
+            sensor_distance=configuration.SensorDistance(**file_params["sensor_distance"]),
+            motor_left_speed=configuration.MotorLeftSpeed(**file_params["motor_left"]),
+            motor_right_speed=configuration.MotorRightSpeed(**file_params["motor_right"]),
+            default_step=configuration.DefaultStep(**file_params["step"]),
+            light_sensor=configuration.LightSensor(**file_params["light_sensor"]),
+            line_sensor_left=configuration.LineSensorLeft(**file_params["line_sensor_left"]),
+            line_sensor_center=configuration.LineSensorCenter(**file_params["line_sensor_center"]),
+            line_sensor_right=configuration.LineSensorRight(**file_params["line_sensor_right"]),
+            rotate_90=configuration.Rotate90(**file_params["rotate_90"]),
+            simulation=simulation_ids)
         else:
-            self.parameters = configuration.RobotParameters(
-            sensor_distance=configuration.SensorDistance(**FILE_PARAM["sensor_distance"]),
-            motor_left_speed=configuration.MotorLeftSpeed(**FILE_PARAM["motor_left"]),
-            motor_right_speed=configuration.MotorRightSpeed(**FILE_PARAM["motor_right"]),
-            default_step=configuration.DefaultStep(**FILE_PARAM["step"]),
-            light_sensor=configuration.LightSensor(**FILE_PARAM["light_sensor"]),
-            line_sensor_left=configuration.LineSensorLeft(**FILE_PARAM["line_sensor_left"]),
-            line_sensor_center=configuration.LineSensorCenter(**FILE_PARAM["line_sensor_center"]),
-            line_sensor_right=configuration.LineSensorRight(**FILE_PARAM["line_sensor_right"]),
-            rotate_90=configuration.Rotate90(**FILE_PARAM["rotate_90"]))
-        
+            parameters = configuration.RobotParameters(
+            sensor_distance=configuration.SensorDistance(**file_params["sensor_distance"]),
+            motor_left_speed=configuration.MotorLeftSpeed(**file_params["motor_left"]),
+            motor_right_speed=configuration.MotorRightSpeed(**file_params["motor_right"]),
+            default_step=configuration.DefaultStep(**file_params["step"]),
+            light_sensor=configuration.LightSensor(**file_params["light_sensor"]),
+            line_sensor_left=configuration.LineSensorLeft(**file_params["line_sensor_left"]),
+            line_sensor_center=configuration.LineSensorCenter(**file_params["line_sensor_center"]),
+            line_sensor_right=configuration.LineSensorRight(**file_params["line_sensor_right"]),
+            rotate_90=configuration.Rotate90(**file_params["rotate_90"]))
+        return parameters
+
+
     def execute(self,code):
-        robot = FossBot(parameters=self.parameters)
+        parameters = self.load_parameters()
+        robot = FossBot(parameters=parameters)
         coms = Communication()
         transmit = coms.transmit
         exec(code)

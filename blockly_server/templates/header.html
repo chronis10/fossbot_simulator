@@ -1,13 +1,23 @@
-<header id="header" class="header">
+<header id="header" class="header drop_shadow">
     <div class="header-wrap">
         <div class="whitebgr">
+            <div id="header-logo" class="header-logo">
+                {% if config.BABEL_DEFAULT_LOCALE == 'el' %}
+                <img src="{{ url_for('static',filename='photos/gfoss_el.png')}}" class="ellak-logo" alt=" ">
+                {% else %}
+                <img src="{{ url_for('static',filename='photos/gfoss_en.png')}}" class="ellak-logo" alt=" ">
+                {% endif %}
+            </div>    
         <div id="header-logo" class="header-logo">
-            <img src="{{ url_for('static',filename='photos/huagr.png')}}" class="hua-logo" alt=" ">
+            {% if config.BABEL_DEFAULT_LOCALE == 'el' %}
+            <img src="{{ url_for('static',filename='photos/hua_el.png')}}" class="hua-logo" alt=" ">
+            {% else %}
+            <img src="{{ url_for('static',filename='photos/hua_en.png')}}" class="hua-logo" alt=" ">
+            {% endif %}
         </div>
-        <div id="header-logo" class="header-logo">
-            <img src="{{ url_for('static',filename='photos/gfel.png')}}" class="ellak-logo" alt=" ">
-        </div>
+
     </div>
+   
         <div id="header-robot-name"> 
             <strong id="robot-name">{{ robot_name }}</strong>
         </div>
